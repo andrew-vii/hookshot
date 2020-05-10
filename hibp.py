@@ -27,9 +27,9 @@ def get_api_key(api_file):
 
 
 def get_accounts(account_file):
+  acounts = []
   try:
     h = open(account_file,"r")
-    accounts = h.readlines()
     
   except IOError:
     print("Error opening Accounts File")
@@ -39,6 +39,9 @@ def get_accounts(account_file):
     print("Unknown Error")
     exit() 
     
+  for line in h:
+    accounts.append(line.strip())
+  
   return accounts
 
 def submit_account_breaches(account):
@@ -57,7 +60,7 @@ def submit_account_breaches(account):
   return breaches_response 
  
   
-def submit_account_pastes(accounts_file): 
+def submit_account_pastes(account): 
   
   # Set up payload with our HIBP API key and distinctive UAS
   payload = {'hibp-api-key': get_api_key(api_key_file),
