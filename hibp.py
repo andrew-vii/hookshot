@@ -152,7 +152,7 @@ def main(argv):
   
   # Submit each account for pastes and breaches
   for account in account_list:
-    sleep(2)
+    sleep(1)
     breach_result = submit_account_breaches(account)
     sleep(2)
     paste_result = submit_account_pastes(account)
