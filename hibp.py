@@ -87,7 +87,7 @@ def check_account_breaches(breach_response):
         print("%s not found in a breach."%eml)
     elif r.status_code == 200:
         data = r.json()
-        print('Breach Check for: %s'%eml)
+        print('Breach Found for: %s'%eml)
         num_breaches = len(data) 
         for d in data:
             #   We only really want the name and date of the breach
@@ -117,10 +117,10 @@ def check_account_pastes(paste_response):
         print("%s not found in a paste."%eml)
     elif r.status_code == 200:
         data = r.json()
-        print('Paste Check for: %s'%eml)
+        print('Paste Found for: %s'%eml)
         num_pastes = len(data) 
         for d in data:
-            #   We only really want the name and date of the paste
+            # We only really want the name and date of the paste
             source = d['Source']
             pasteDate = d['Date']
             title = d['Title']
@@ -139,47 +139,34 @@ def main(argv):
   api_key_file = ''
   
   parser = argparse.ArgumentParser()
-  parser.add_argument("-v", "--verbose", help="increase output verbosity",
-                    action="store_true")
+  parser.add_argument("key_file", type=str, help="HIBP API Key File")
+  parser.add_argument("accounts_file", type=str, help="Account List File") 
   args = parser.parse_args()
-  
-  
-  WIP LINE
-  
-  if len(sys.argv) < 4:
-    print('glaive.py -a <accounts_file> -k <keyfile> -o <outputfile>' )
-    sys.exit(2)
-    
-    
-    for arg in sys.argv:
-      if arg == '-h':
-         print 'glaive.py -a <accounts_file> -k <key_file>'
-          sys.exit()
-      elif arg in ("-a", "--acounts"):
-         accounts_file = arg
-      elif arg in ("-k", "--key"):
-         api_key_file = arg
 
+  # Set up logfile 
+  logfile = "accountlog" + str(datetime.datetime.now()) + ".log"
+  output_file = open(logfile,"a+")
+  
   # Get accounts
-  get_accounts(accounts_file)
+  account_list = get_accounts(args.accounts_file)
   
   # Submit each account for pastes and breaches
-  for account in get_accouts:
-    
-    # Submit account for breaches and pastes with rate limiting avoidance
+  for account in account_list:
     sleep(2)
     breach_result = submit_account_breaches(account)
     sleep(2)
-    pastes_result = submit_account_pastes(account)
+    paste_result = submit_account_pastes(account)
     sleep(1)
     
     # Check results
     check_account_breaches(breach_result)
-    
     check_account_pastes(pastes_result)
     
-    
-          
+    # Output results to file
+    output_file.write("\n:::" + str(datetime.datetime.now()) + ":::\n:::" + account + ":::\n\n" + breach_result + "\n\n" + paste_result + "\n-----------------------\n\n") 
+
+  output_file.close()
+  
 if __name__ == "__main__":
    main(sys.argv[1:])
 
