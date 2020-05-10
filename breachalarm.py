@@ -1,4 +1,4 @@
-# HIBP API Integration
+# BreachAlarm API Integration
 
 import os
 import sys
