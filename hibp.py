@@ -134,15 +134,8 @@ def check_account_pastes(paste_response):
   return paste_info
 
 
-def main(argv):
-  accounts_file = ''
-  api_key_file = ''
+def hibp_checker(keyfile, accountfile):
   
-  parser = argparse.ArgumentParser()
-  parser.add_argument("key_file", type=str, help="HIBP API Key File")
-  parser.add_argument("accounts_file", type=str, help="Account List File") 
-  args = parser.parse_args()
-
   # Set up logfile 
   logfile = "accountlog" + str(datetime.datetime.now()) + ".log"
   output_file = open(logfile,"a+")
@@ -167,7 +160,6 @@ def main(argv):
 
   output_file.close()
   
-if __name__ == "__main__":
-   main(sys.argv[1:])
+  return 
 
 
