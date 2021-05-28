@@ -71,10 +71,9 @@ def check_URL(URL, input_type):
 
     
 def webscraper(URL):
-  
   url_list = []
   input_type = check_input(URL)
-  status, url_list = check_URL(URL, input_type)
+  url_list, status = check_URL(URL, input_type)
   
   for i in url_list:
     print("Scraping " + i)
