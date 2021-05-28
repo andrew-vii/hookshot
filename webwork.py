@@ -25,6 +25,7 @@ def check_input(URL):
 # Check that we can reach the URL
 def check_URL(URL, input_type):
   url_list = []
+  status = 0
   if input_type == 1:
     print("Checking single URL to reach")
     print("Checking " + URL)
@@ -74,6 +75,7 @@ def webscraper(URL):
   url_list = []
   input_type = check_input(URL)
   url_list, status = check_URL(URL, input_type)
+  
   
   for i in url_list:
     print("Scraping " + i)
