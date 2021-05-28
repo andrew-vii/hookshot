@@ -131,7 +131,7 @@ def check_account_pastes(paste_response):
   
   # Checking for pastes 
   if r.status_code == 404:
-        print("%s not found in a paste."%eml)
+    print("%s not found in a paste."%eml)
   elif r.status_code == 200:
     data = r.json()
     print('Paste Found for: %s'%eml)
@@ -165,11 +165,11 @@ def hibp_checker(keyfile):
     output_file = open(logfile,"a+")
     
     for account in accounts:
-      sleep(1)
+      time.sleep(1.5)
       breach_result = submit_account_breaches(account)
-      sleep(2)
+      time.sleep(3)
       paste_result = submit_account_pastes(account)
-      sleep(1)
+      time.sleep(1.5)
     
       # Check results
       check_account_breaches(breach_result)
