@@ -20,20 +20,19 @@ def check_input(URL):
     print("URL Input Error")
     input_type = 0
     
-    return input_type
+  return input_type
 
 # Check that we can reach the URL
 def check_URL(URL, input_type):
   url_list = []
   status = 0
   if input_type == 1:
-    print("Checking single URL to reach")
-    print("Checking " + URL)
+    print("Checking single URL to reach (" + URL + ")...")
     url_list.append(URL)
     check_response = requests.get(url_list[0])
     
     if check_response.status_code == 200:
-      print("URL Confirmed Reachable")
+      print("URL Confirmed Reachable!")
       status = 1
     else:
       print("Error reaching URL")
@@ -74,7 +73,7 @@ def check_URL(URL, input_type):
 def webscraper(URL):
   url_list = []
   input_type = check_input(URL)
-  url_list, status = check_URL(URL, input_type)
+  status, url_list = check_URL(URL, input_type)
   
   
   for i in url_list:
