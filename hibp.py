@@ -102,20 +102,20 @@ def check_account_breaches(breach_response):
   # Checking for breaches 
   if r.status_code == 404:
         print("%s not found in a breach."%eml)
-    elif r.status_code == 200:
-        data = r.json()
-        print('Breach Found for: %s'%eml)
-        num_breaches = len(data) 
-        for d in data:
-            #   We only really want the name and date of the breach
-            breach = d['Name']
-            breachDate = d['BreachDate']
-            breach_info['breaches'].append(breach + " - " + breachDate)
+  elif r.status_code == 200:
+    data = r.json()
+    print('Breach Found for: %s'%eml)
+    num_breaches = len(data) 
+    for d in data:
+        #   We only really want the name and date of the breach
+        breach = d['Name']
+        breachDate = d['BreachDate']
+        breach_info['breaches'].append(breach + " - " + breachDate)
             
-    else:
-        data = r.json()
-        print('Error: <%s>  %s'%(str(r.status_code),data['message']))
-        exit()
+  else:
+    data = r.json()
+    print('Error: <%s>  %s'%(str(r.status_code),data['message']))
+    exit()
         
   return breach_info
 
@@ -132,21 +132,21 @@ def check_account_pastes(paste_response):
   # Checking for pastes 
   if r.status_code == 404:
         print("%s not found in a paste."%eml)
-    elif r.status_code == 200:
-        data = r.json()
-        print('Paste Found for: %s'%eml)
-        num_pastes = len(data) 
-        for d in data:
-            # We only really want the name and date of the paste
-            source = d['Source']
-            pasteDate = d['Date']
-            title = d['Title']
-            paste_info['pastes'].append(title + " - " + source + " - " + pasteDate)
-            
-    else:
-        data = r.json()
-        print('Error: <%s>  %s'%(str(r.status_code),data['message']))
-        exit()
+  elif r.status_code == 200:
+    data = r.json()
+    print('Paste Found for: %s'%eml)
+    num_pastes = len(data) 
+    for d in data:
+        # We only really want the name and date of the paste
+        source = d['Source']
+        pasteDate = d['Date']
+        title = d['Title']
+        paste_info['pastes'].append(title + " - " + source + " - " + pasteDate)
+        
+  else:
+    data = r.json()
+    print('Error: <%s>  %s'%(str(r.status_code),data['message']))
+    exit()
         
   return paste_info
 
