@@ -34,3 +34,8 @@ def main(argv):
     sleep(1)
   return 
   
+  
+  
+  # Run program
+  if __name__ == "__main__":
+    main()
