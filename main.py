@@ -14,13 +14,13 @@ def main(argv)
 
   parser = argparse.ArgumentParser()
   parser.add_argument("hibp_keyfile", type=str, help="HIBP API Key File")
-  parser.add_argument("ba_keyfile", type=str, help="HIBP API Key File")
-  parser.add_argument("accountfile", type=str, help="Account List File") 
+  #parser.add_argument("ba_keyfile", type=str, help="HIBP API Key File")
+  parser.add_argument("URL", type=str, help="Target URL") 
   args = parser.parse_args()
   
   while True: 
     # Run HIBP routine 
-    hibp.hibp_checker(args.hibp_keyfile, args.accountfile)
+    hibp.hibp_checker(args.hibp_keyfile, args.URL)
     
     # Run BreachAlarm routine - removed after BA removed API access
     #ba.bral_checker(args.ba_keyfile, args.accountfile)
