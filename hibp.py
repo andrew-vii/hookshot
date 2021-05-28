@@ -62,7 +62,7 @@ def submit_account_breaches(account):
   
   # Set up payload with our HIBP API key and distinctive UAS
   payload = {'hibp-api-key': get_api_key(api_key_file),
-             'user-agent': 'Bulwark Cybersecurity'
+             'user-agent': 'Hookshot'
             }
   
   # Set URL for account breaches
@@ -78,7 +78,7 @@ def submit_account_pastes(account):
   
   # Set up payload with our HIBP API key and distinctive UAS
   payload = {'hibp-api-key': get_api_key(api_key_file),
-             'user-agent': 'Bulwark Cybersecurity'
+             'user-agent': 'Hookshot'
             }
   
   # Set URL for account breaches
