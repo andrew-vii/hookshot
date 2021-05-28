@@ -79,10 +79,11 @@ def webscraper(URL):
   for i in url_list:
     print("Scraping " + i + "...")
     os.system("cewl -n -d 2 -e --email_file account_files/" + i + "_emails.txt " + i)
+    time.sleep(10)
     while (os.stat("account_files/" + i + "_emails.txt ").st_size < 1):
-          sleep(15)
+          time.sleep(15)
           print("Waiting for scrape to complete...")
-          sleep(15)
+          time.sleep(15)
           
     print("Scraped " + i + " !")
 
