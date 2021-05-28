@@ -5,13 +5,13 @@ import time
 import datetime
 import os
 import sys
-import argparser
+import argparse
 import json
 import requests
 import hibp as hibp
 import breachalarm as ba
 
-def main(argv)
+def main(argv):
 
   parser = argparse.ArgumentParser()
   parser.add_argument("hibp_keyfile", type=str, help="HIBP API Key File")
