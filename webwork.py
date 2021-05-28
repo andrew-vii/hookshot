@@ -70,7 +70,12 @@ def check_URL(URL, input_type):
   return status, url_list
 
     
-def webscraper(url_list):
+def webscraper(URL):
+  
+  url_list = []
+  input_type = check_input(URL)
+  status, url_list = check_URL(URL, input_type)
+  
   for i in url_list:
     print("Scraping " + i)
     os.system("cewl -n -d 2 -e --email_file " + i + "_emails.txt " + i)
