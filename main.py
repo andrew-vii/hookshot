@@ -25,7 +25,7 @@ def main(argv):
     webwork.webscraper(args.URL)
     
     # Run HIBP routine 
-    hibp.hibp_checker(args.hibp_keyfile, args.URL)
+    hibp.hibp_checker(args.hibp_keyfile)
     
     # Run BreachAlarm routine - removed after BA removed API access
     #ba.bral_checker(args.ba_keyfile, args.accountfile)
