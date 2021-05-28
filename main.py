@@ -36,6 +36,6 @@ def main(argv):
   
   
   
-  # Run program
-  if __name__ == "__main__":
-    main()
+# Run program
+if __name__ == "__main__":
+  main()
