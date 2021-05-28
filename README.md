@@ -1,11 +1,12 @@
 API Projects
 
-A set of tools for breach detection and awareness of email accounts and passwords.
+A tool for automating web scraping of emails from a URL and checking accounts against data breach tools. 
+
 
 Currently integrated:
 - Have I Been Pwned (HIBP) Account reaches and Pastes
 
 To run, execute 
 ```bash
-python bulwark.py <API_keyfile> <account_list_file>
+python bulwark.py <API_keyfile> <URL>
 ```
