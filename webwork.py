@@ -13,7 +13,7 @@ def check_input(URL):
   if "http" or "www" or "://" in URL:
     print("Single URL Mode")
     input_type = 1
-  else if path.isfile(URL):
+  elif path.isfile(URL):
     print("URL List Mode")
     input_type = 2
   else:
@@ -39,7 +39,7 @@ def check_URL(URL, input_type):
       print("Error Received: " + str(check_response.status_code))
       status = 0 
 
-  else if input_type == 2:
+  elif input_type == 2:
     print("Checking list of URLs to reach")
     with open(URL) as f:
       url_list = f.readlines()
