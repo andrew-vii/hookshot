@@ -78,7 +78,7 @@ def webscraper(URL):
   
   for i in url_list:
     print("Scraping " + i)
-    os.system("cewl -n -d 2 -e --email_file " + i + "_emails.txt " + i)
+    os.system("cewl -n -d 2 -e --email_file account_files/" + i + "_emails.txt " + i)
     print("Scraped " + i)
 
   return
