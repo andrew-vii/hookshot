@@ -29,7 +29,7 @@ def get_api_key(api_file):
 def get_accounts():
   account_dict = {}
   
-  if path.isdir("account_files"):
+  if os.path.isdir("account_files"):
     filenames = listdir("account_files")
   else:
     print("Error getting account files -- is there an account_files directory?")
