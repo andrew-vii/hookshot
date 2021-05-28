@@ -8,5 +8,5 @@ Currently integrated:
 
 To run, execute 
 ```bash
-python bulwark.py <API_keyfile> <URL>
+python hookshot.py <API_keyfile> <URL>
 ```
