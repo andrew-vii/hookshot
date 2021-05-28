@@ -30,7 +30,7 @@ def get_accounts():
   account_dict = {}
   
   if os.path.isdir("account_files"):
-    filenames = listdir("account_files")
+    filenames = os.listdir("account_files")
   else:
     print("Error getting account files -- is there an account_files directory?")
     filenames = 0 
