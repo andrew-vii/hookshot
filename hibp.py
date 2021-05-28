@@ -26,23 +26,37 @@ def get_api_key(api_file):
   return api_key
 
 
-def get_accounts(account_file):
-  acounts = []
-  try:
-    h = open(account_file,"r")
-    
-  except IOError:
-    print("Error opening Accounts File")
-    exit()
-    
-  else:
-    print("Unknown Error")
-    exit() 
-    
-  for line in h:
-    accounts.append(line.strip())
+def get_accounts():
+  account_dict = {}
   
-  return accounts
+  if path.isdir("account_files"):
+    filenames = listdir("account_files")
+  else:
+    print("Error getting account files -- is there an account_files directory?")
+    filenames = 0 
+    exit()
+  
+  for i in filenames:
+    accounts = []
+    
+    try:
+      h = open(i,"r")
+    
+    except IOError:
+      print("Error opening Accounts File")
+      exit()
+    
+    else:
+      print("Unknown Error")
+      exit() 
+    
+    for line in h:
+      accounts.append(line.strip())
+  
+    # Update master dict with list of accounts for URL
+    account_dict[i] = accounts
+  
+  return account_dict
 
 def submit_account_breaches(account):
   
@@ -137,31 +151,34 @@ def check_account_pastes(paste_response):
   return paste_info
 
 
-def hibp_checker(keyfile, accountfile):
+def hibp_checker(keyfile):
   
-  # Set up logfile 
-  logfile = "accountlog" + str(datetime.datetime.now()) + ".log"
-  output_file = open(logfile,"a+")
   
   # Get accounts
-  account_list = get_accounts(args.accounts_file)
+  account_dict = get_accounts()
   
   # Submit each account for pastes and breaches
-  for account in account_list:
-    sleep(1)
-    breach_result = submit_account_breaches(account)
-    sleep(2)
-    paste_result = submit_account_pastes(account)
-    sleep(1)
+  for url, accounts in account_dict.items():
     
-    # Check results
-    check_account_breaches(breach_result)
-    check_account_pastes(pastes_result)
+      # Set up logfile 
+    logfile = url + "_accountlog" + str(datetime.datetime.now()) + ".log"
+    output_file = open(logfile,"a+")
     
-    # Output results to file
-    output_file.write("\n:::" + str(datetime.datetime.now()) + ":::\n:::" + account + ":::\n\n" + breach_result + "\n\n" + paste_result + "\n-----------------------\n\n") 
+    for account in accounts:
+      sleep(1)
+      breach_result = submit_account_breaches(account)
+      sleep(2)
+      paste_result = submit_account_pastes(account)
+      sleep(1)
+    
+      # Check results
+      check_account_breaches(breach_result)
+      check_account_pastes(pastes_result)
+    
+      # Output results to file
+      output_file.write("\n:::" + str(datetime.datetime.now()) + ":::\n:::" + account + ":::\n\n" + breach_result + "\n\n" + paste_result + "\n-----------------------\n\n") 
 
-  output_file.close()
+    output_file.close()
   
   return 
 
