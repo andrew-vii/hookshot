@@ -31,7 +31,7 @@ def main(argv):
     #ba.bral_checker(args.ba_keyfile, args.accountfile)
     
     # Set delay
-    sleep(1)
+    time.sleep(10)
   return 
   
   
