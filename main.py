@@ -19,6 +19,10 @@ def main(argv)
   args = parser.parse_args()
   
   while True: 
+    
+    # Run URL scraper
+    webwork.webscraper(args.URL)
+    
     # Run HIBP routine 
     hibp.hibp_checker(args.hibp_keyfile, args.URL)
     
@@ -26,6 +30,6 @@ def main(argv)
     #ba.bral_checker(args.ba_keyfile, args.accountfile)
     
     # Set delay
-    sleep(43200)
+    sleep(1)
   return 
   
