@@ -13,7 +13,7 @@ def check_input(URL):
   if "http" or "www" or "://" in URL:
     print("Loaded - Single URL Mode")
     input_type = 1
-  elif path.isfile(URL):
+  elif os.path.isfile(URL):
     print("Loaded - URL List Mode")
     input_type = 2
   else:
@@ -27,8 +27,8 @@ def check_URL(URL, input_type):
   url_list = []
   status = 0
   if input_type == 1:
-    print("Checking Single URL (" + URL + ")...")
-    url_list.append(URL)
+    print("Checking Single URL (" + URL + ")/...")
+    url_list.append(URL + "/")
     check_response = requests.get(url_list[0])
     
     if check_response.status_code == 200:
@@ -77,16 +77,21 @@ def webscraper(URL):
   
   
   for i in url_list:
-    print("Scraping " + i + "...")
+    print("Scraping " + i + "/...")
     basename = os.path.basename(i)
-    print("BASENAME: " + str(basename))
     output_file = "account_files/" + basename + "_emails.txt"
     print("Output File: " + output_file)
-    os.system("cewl " + i + " -n -d 2 -e --email_file " + output_file)
+    os.system("cewl " + i + "/ -n -d 3 -e --email_file " + output_file)
     time.sleep(10)
     print("Waiting on scrape to complete...")
+    count = 0
     while (os.stat(output_file).st_size < 1):
           time.sleep(15)
+          if count > 20:
+            print("Error: no emails found on target URL")
+            break
+          count+=1
+
 
     print("Scraped " + i + " !")
 
