@@ -79,7 +79,8 @@ def webscraper(URL):
   for i in url_list:
     print("Scraping " + i + "...")
     basename = os.path.basename(i)
-    output_file = "account_files/" + str(basename) + "_emails.txt"
+    print("BASENAME: " + str(basename))
+    output_file = "account_files/" + basename + "_emails.txt"
     print("Output File: " + output_file)
     os.system("cewl " + i + " -n -d 2 -e --email_file " + output_file)
     time.sleep(10)
