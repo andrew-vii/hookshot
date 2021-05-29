@@ -18,10 +18,10 @@ def get_api_key(api_file):
   except IOError:
     print("Error opening HIBP API Key File")
     exit()
-    
+
   else:
     print("Unknown Error")
-    exit() 
+    exit()
   
   return api_key
 
@@ -33,23 +33,23 @@ def get_accounts():
     filenames = os.listdir("account_files")
   else:
     print("Error getting account files -- is there an account_files directory?")
-    filenames = 0 
+    filenames = 0
     exit()
   
   for i in filenames:
     accounts = []
-    
+
     try:
-      h = open(i,"r")
-    
+      h = open(i, "r")
+
     except IOError:
       print("Error opening Accounts File")
       exit()
-    
+
     else:
       print("Unknown Error")
-      exit() 
-    
+      exit()
+
     for line in h:
       accounts.append(line.strip())
   
@@ -58,7 +58,8 @@ def get_accounts():
   
   return account_dict
 
-def submit_account_breaches(account):
+
+def submit_account_breaches(account, api_key_file):
   
   # Set up payload with our HIBP API key and distinctive UAS
   payload = {'hibp-api-key': get_api_key(api_key_file),
@@ -69,12 +70,12 @@ def submit_account_breaches(account):
   breach_url = 'https://haveibeenpwned.com/api/v3/breachedaccount/' + account
   
   # Submit our GET request
-  breaches_response = requests.get(submit_url, params=payload)
+  breaches_response = requests.get(breach_url, params=payload)
   
   return breaches_response 
  
   
-def submit_account_pastes(account): 
+def submit_account_pastes(account, api_key_file):
   
   # Set up payload with our HIBP API key and distinctive UAS
   payload = {'hibp-api-key': get_api_key(api_key_file),
@@ -85,69 +86,69 @@ def submit_account_pastes(account):
   breach_url = 'https://haveibeenpwned.com/api/v3/pasteaccount/' + account
   
   # Submit our GET request
-  breaches_response = requests.get(submit_url, params=payload)
+  breaches_response = requests.get(breach_url, params=payload)
   
-  return pastes_response
+  return breaches_response
 
 
-def check_account_breaches(breach_response):
+def check_account_breaches(breach_response, account):
   
   r = breach_response
   
   breach_info = {
-    num_breaches: 0,
-    breaches: []    
+    'num_breaches': 0,
+    'breaches': []
   }
   
   # Checking for breaches 
   if r.status_code == 404:
-        print("%s not found in a breach."%eml)
+    print("%s not found in a breach." %account)
   elif r.status_code == 200:
     data = r.json()
-    print('Breach Found for: %s'%eml)
-    num_breaches = len(data) 
+    print('Breach Found for: %s' %account)
+    num_breaches = len(data)
     for d in data:
         #   We only really want the name and date of the breach
         breach = d['Name']
         breachDate = d['BreachDate']
         breach_info['breaches'].append(breach + " - " + breachDate)
-            
+
   else:
     data = r.json()
     print('Error: <%s>  %s'%(str(r.status_code),data['message']))
     exit()
-        
+
   return breach_info
 
 
-def check_account_pastes(paste_response):
+def check_account_pastes(paste_response, account):
   
   r = paste_response
   
   paste_info = {
-    num_pastes: 0,
-    pastes: []    
+    'num_pastes': 0,
+    'pastes': []
   }
   
   # Checking for pastes 
   if r.status_code == 404:
-    print("%s not found in a paste."%eml)
+    print("%s not found in a paste." %account)
   elif r.status_code == 200:
     data = r.json()
-    print('Paste Found for: %s'%eml)
-    num_pastes = len(data) 
+    print('Paste Found for: %s' %account)
+    num_pastes = len(data)
     for d in data:
         # We only really want the name and date of the paste
         source = d['Source']
         pasteDate = d['Date']
         title = d['Title']
         paste_info['pastes'].append(title + " - " + source + " - " + pasteDate)
-        
+
   else:
     data = r.json()
     print('Error: <%s>  %s'%(str(r.status_code),data['message']))
     exit()
-        
+
   return paste_info
 
 
@@ -159,24 +160,24 @@ def hibp_checker(keyfile):
   
   # Submit each account for pastes and breaches
   for url, accounts in account_dict.items():
-    
-      # Set up logfile 
+
+      # Set up logfile
     logfile = url + "_accountlog" + str(datetime.datetime.now()) + ".log"
     output_file = open(logfile,"a+")
-    
+
     for account in accounts:
       time.sleep(1.5)
-      breach_result = submit_account_breaches(account)
+      breach_result = submit_account_breaches(account, keyfile)
       time.sleep(3)
-      paste_result = submit_account_pastes(account)
+      paste_result = submit_account_pastes(account, keyfile)
       time.sleep(1.5)
-    
+
       # Check results
-      check_account_breaches(breach_result)
-      check_account_pastes(pastes_result)
-    
+      breach_info = check_account_breaches(breach_result, account)
+      paste_info = check_account_pastes(paste_result, account)
+
       # Output results to file
-      output_file.write("\n:::" + str(datetime.datetime.now()) + ":::\n:::" + account + ":::\n\n" + breach_result + "\n\n" + paste_result + "\n-----------------------\n\n") 
+      output_file.write("\n:::" + str(datetime.datetime.now()) + ":::\n:::" + account + ":::\n\n" + breach_info + "\n\n" + paste_info + "\n-----------------------\n\n")
 
     output_file.close()
   
