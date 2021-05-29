@@ -11,10 +11,10 @@ import argparse
 # Check our input (single URL or file) 
 def check_input(URL):
   if "http" or "www" or "://" in URL:
-    print("Single URL Mode")
+    print("Loaded - Single URL Mode")
     input_type = 1
   elif path.isfile(URL):
-    print("URL List Mode")
+    print("Loaded - URL List Mode")
     input_type = 2
   else:
     print("URL Input Error")
@@ -27,7 +27,7 @@ def check_URL(URL, input_type):
   url_list = []
   status = 0
   if input_type == 1:
-    print("Checking single URL to reach (" + URL + ")...")
+    print("Checking Single URL (" + URL + ")...")
     url_list.append(URL)
     check_response = requests.get(url_list[0])
     
@@ -35,7 +35,7 @@ def check_URL(URL, input_type):
       print("URL Confirmed Reachable!")
       status = 1
     else:
-      print("Error reaching URL")
+      print("Error Reaching URL")
       print("Error Received: " + str(check_response.status_code))
       status = 0 
 
@@ -45,15 +45,15 @@ def check_URL(URL, input_type):
       url_list = f.readlines()
       url_dictionary = { url : 0 for url in url_list }
     for i in url_list:
-      print("Checking " + i)
+      print("Checking " + i + "...")
       check_url = i
       check_response = requests.get(check_url)
     
       if check_response.status_code == 200:
-        print("URL Confirmed Reachable")
+        print("URL Confirmed Reachable!")
         url_dictionary[i] = 1
       else:
-        print("Error reaching URL")
+        print("Error Reaching URL")
         print("Error Received: " + str(check_response.status_code))
         url_dictionary[i] = 0
       
@@ -61,7 +61,7 @@ def check_URL(URL, input_type):
       print("Error reaching one or more URLs")
       status = 0
     else:
-      print("All URLs reachable")
+      print("All URLs Reachable!")
       status = 1
       
   else:
@@ -78,14 +78,15 @@ def webscraper(URL):
   
   for i in url_list:
     print("Scraping " + i + "...")
-    basename = str(os.system("basename " + str(i)))
-    os.system("cewl " + i + " -n -d 2 -e --email_file 'account_files/." + basename + "_emails.txt'")
+    basename = os.path.basename(i)
+    output_file = "account_files/" + str(basename) + "_emails.txt"
+    print("Output File: " + output_file)
+    os.system("cewl " + i + " -n -d 2 -e --email_file " + output_file)
     time.sleep(10)
-    while (os.stat("account_files/." + basename + "_emails.txt ").st_size < 1):
+    print("Waiting on scrape to complete...")
+    while (os.stat(output_file).st_size < 1):
           time.sleep(15)
-          print("Waiting for scrape to complete...")
-          time.sleep(15)
-          
+
     print("Scraped " + i + " !")
 
   return
