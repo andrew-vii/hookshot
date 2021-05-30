@@ -20,7 +20,7 @@ def get_api_key(api_file):
     exit()
 
   else:
-    print("Unknown Error")
+    print("Unknown Error - Is there an API Key file?")
     exit()
   
   return api_key
@@ -40,7 +40,7 @@ def get_accounts():
     accounts = []
 
     try:
-      h = open(i, "r")
+      h = open("account_files/" + i, "r")
 
     except IOError:
       print("Error opening Accounts File")
@@ -162,7 +162,7 @@ def hibp_checker(keyfile):
   for url, accounts in account_dict.items():
 
       # Set up logfile
-    logfile = url + "_accountlog" + str(datetime.datetime.now()) + ".log"
+    logfile = "output_files/" + url + "_accountlog" + str(datetime.datetime.now()) + ".log"
     output_file = open(logfile,"a+")
 
     for account in accounts:
