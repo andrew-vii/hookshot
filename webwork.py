@@ -5,17 +5,18 @@ import sys
 import requests
 import json
 import time
+import _thread
 import datetime
 import argparse
 
 # Check our input (single URL or file) 
 def check_input(URL):
-  if "http" or "www" or "://" in URL:
-    print("Loaded - Single URL Mode")
-    input_type = 1
-  elif os.path.isfile(URL):
+  if os.path.isfile(URL):
     print("Loaded - URL List Mode")
     input_type = 2
+  elif "http" or "www" or "://" in URL:
+    print("Loaded - Single URL Mode")
+    input_type = 1
   else:
     print("URL Input Error")
     input_type = 0
@@ -43,10 +44,11 @@ def check_URL(URL, input_type):
     print("Checking list of URLs to reach")
     with open(URL) as f:
       url_list = f.readlines()
-      url_dictionary = { url : 0 for url in url_list }
-    for i in url_list:
-      print("Checking " + i + "...")
-      check_url = i
+      url_dictionary = { url.strip() : 0 for url in url_list }
+    for c in url_list:
+      i = c.strip()
+      print("Checking " + i.strip() + "...")
+      check_url = i.strip()
       check_response = requests.get(check_url)
     
       if check_response.status_code == 200:
@@ -69,19 +71,20 @@ def check_URL(URL, input_type):
   
   return status, url_list
 
-    
+
 def webscraper(URL):
   url_list = []
   input_type = check_input(URL)
   status, url_list = check_URL(URL, input_type)
-  
-  
-  for i in url_list:
+
+  for url in url_list:
+    i = url.strip()
     print("Scraping " + i + "...")
     basename = os.path.basename(i)
     output_file = "account_files/" + basename + "_emails.txt"
     print("Output File: " + output_file)
-    os.system("cewl " + i + "/ -n -d 2 -e --email_file " + output_file)
+    _thread.start_new_thread(os.system, ("cewl " + i + "/ -n -d 2 -e --email_file " + output_file,))
+    #os.system("cewl " + i + "/ -n -d 2 -e --email_file " + output_file)
     time.sleep(10)
     print("Waiting on scrape to complete...")
     count = 0

@@ -7,6 +7,7 @@ import datetime
 import os
 import sys
 import argparse
+import _thread
 import json
 import requests
 import hibp as hibp
@@ -29,9 +30,6 @@ def main(argv):
 
         # Run HIBP routine
         hibp.hibp_checker(args.hibp_keyfile)
-
-        # Run BreachAlarm routine - removed after BA removed API access
-        # ba.bral_checker(args.ba_keyfile, args.accountfile)
 
         # Set delay
         time.sleep(1)
