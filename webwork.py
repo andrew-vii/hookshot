@@ -5,7 +5,7 @@ import sys
 import requests
 import json
 import time
-import _thread
+import subprocess
 import datetime
 import argparse
 
@@ -47,6 +47,7 @@ def check_URL(URL, input_type):
       url_dictionary = { url.strip() : 0 for url in url_list }
     for c in url_list:
       i = c.strip()
+      time.sleep(0.1)
       print("Checking " + i.strip() + "...")
       check_url = i.strip()
       check_response = requests.get(check_url)
@@ -71,32 +72,46 @@ def check_URL(URL, input_type):
   
   return status, url_list
 
-
 def webscraper(URL):
   url_list = []
   input_type = check_input(URL)
   status, url_list = check_URL(URL, input_type)
 
+  # Run scrapes on target URLs
   for url in url_list:
     i = url.strip()
     print("Scraping " + i + "...")
     basename = os.path.basename(i)
     output_file = "account_files/" + basename + "_emails.txt"
     print("Output File: " + output_file)
-    _thread.start_new_thread(os.system, ("cewl " + i + "/ -n -d 2 -e --email_file " + output_file,))
-    #os.system("cewl " + i + "/ -n -d 2 -e --email_file " + output_file)
-    time.sleep(10)
-    print("Waiting on scrape to complete...")
-    count = 0
-    while count < 20:
-      time.sleep(15)
-      if (os.stat(output_file).st_size > 1):
-        print("Scrape complete!")
-        break
+    url_new = i + "/"
+
+    # Run our scrapes in parallel
+    scrape_command = "cewl %s -n -d 3 -e --email_file %s" % (url_new, output_file)
+    p = subprocess.Popen(scrape_command.split(), stdout=subprocess.PIPE)
+
+  # Give scrapes time to finish and check output file size for completion
+  count = 0
+  time.sleep(5)
+  while count < 30:
+    for url in url_list:
+      i = url.strip()
+      basename = os.path.basename(i)
+      output_file = "account_files/" + basename + "_emails.txt"
+      if (os.stat(output_file).st_size < 1):
+        time.sleep(10)
+        print("Waiting on scrape for " + url + " to complete...")
       count += 1
-    if count >= 20:
-      print("Error: No emails found on target URL")
-    print("Scraped " + i + " !")
+
+  # Wrap up and output count of good scrapes
+  print("Scrapes complete!")
+  good_scrapes = 0
+  for url in url_list:
+    i = url.strip()
+    basename = os.path.basename(i)
+    output_file = "account_files/" + basename + "_emails.txt"
+    if (os.stat(output_file).st_size < 1):
+      good_scrapes += 1
 
   return
     
