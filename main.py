@@ -14,9 +14,6 @@ import hibp as hibp
 import webwork as webwork
 
 
-# import hibp as hibp
-# import breachalarm as ba
-
 def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument("hibp_keyfile", type=str, help="HIBP API Key File")
@@ -29,12 +26,14 @@ def main(argv):
         webwork.webscraper(args.URL)
 
         # Run HIBP routine
-        hibp.hibp_checker(args.hibp_keyfile)
+        main_dict = hibp.hibp_checker(args.hibp_keyfile)
+        
+        # Run analysis
+        reporter.analyze(main_dict)
 
         # Set delay
         time.sleep(1)
 
-        
     return
 
 
