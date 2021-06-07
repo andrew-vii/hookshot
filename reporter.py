@@ -9,43 +9,38 @@ import subprocess
 import datetime
 import argparse
 
-def analyze(URL):
+def analyze(results_dict):
+  
+  # Make our main nested dict structure
+  analysis_dict = {}
   
   # Pull our dict with filenames as key and accounts listed as values
   account_dict = hibp.get_accounts()
   
-  
-
-
-# FOR REFERENCE
-
-def hibp_checker(keyfile):
-  
-  
-  # Get accounts
-  account_dict = get_accounts()
-  
-  # Submit each account for pastes and breaches
+  # Make our list of URLs the keys in the nested dict and build keys for nested dict
   for url, accounts in account_dict.items():
+    analysis_dict[url] = {}
+    analysis_dict[url]['Breached_Accounts'] = 0
+    analysis_dict[url]['Pasted_Accounts'] = 0
+    analysis_dict[url]['Total_Accounts'] = 0
 
-      # Set up logfile
-    logfile = "output_files/" + url + "_accountlog" + str(datetime.datetime.now()) + ".log"
-    output_file = open(logfile,"a+")
-
-    for account in accounts:
-      time.sleep(1.5)
-      breach_result = submit_account_breaches(account, keyfile)
-      time.sleep(3)
-      paste_result = submit_account_pastes(account, keyfile)
-      time.sleep(1.5)
-
-      # Check results
-      breach_info = check_account_breaches(breach_result, account)
-      paste_info = check_account_pastes(paste_result, account)
-
-      # Output results to file
-      output_file.write("\n:::" + str(datetime.datetime.now()) + ":::\n:::" + account + ":::\n\n" + breach_info + "\n\n" + paste_info + "\n-----------------------\n\n")
-
-    output_file.close()
   
-  return 
+  # Go through our main dictionary
+  for account, info in results_dict.items():
+    
+    # Increment our breach count for the URL matching the breached account
+    if info['Breach_Count'] > 0:
+      analysis_dict[info['URL']]['Breached_Accounts'] += 1
+      
+    if info['Paste_Count'] > 0:
+      analysis_dict[info['URL']]['Pasted_Accounts'] += 1
+      
+    # Increment the total account count for the URL
+    analysis_dict[info['Total_Accounts'] += 1
+    
+    
+      
+
+  return
+    
+    
