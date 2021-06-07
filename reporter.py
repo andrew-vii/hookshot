@@ -9,11 +9,12 @@ import subprocess
 import datetime
 import argparse
 
-analyze(URL):
+def analyze(URL):
+  
+  # Pull our dict with filenames as key and accounts listed as values
+  account_dict = hibp.get_accounts()
   
   
-  
-hibp.check(accounts)
 
 
 # FOR REFERENCE
