@@ -1,7 +1,22 @@
+# Data Analysis and Report Generator
+
+import os
+import sys
+import requests
+import json
+import time
+import subprocess
+import datetime
+import argparse
+
+analyze(URL):
+  
+  
+  
+hibp.check(accounts)
+
 
 # FOR REFERENCE
-
-hibp.check(accounts)
 
 def hibp_checker(keyfile):
   
