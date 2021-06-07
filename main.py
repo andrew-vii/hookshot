@@ -33,9 +33,7 @@ def main(argv):
 
         # Set delay
         time.sleep(1)
-        
-        # Run analysis and report
-        reporter.analyze(args.URL)
+
         
     return
 
