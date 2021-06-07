@@ -70,6 +70,7 @@ def submit_account_breaches(account, api_key_file):
   breach_url = 'https://haveibeenpwned.com/api/v3/breachedaccount/' + account
   
   # Submit our GET request
+  print("Submitting breach request for account: " + account)
   breaches_response = requests.get(breach_url, params=payload)
   
   return breaches_response 
@@ -86,6 +87,7 @@ def submit_account_pastes(account, api_key_file):
   breach_url = 'https://haveibeenpwned.com/api/v3/pasteaccount/' + account
   
   # Submit our GET request
+  print("Submitting paste request for account: " + account)
   breaches_response = requests.get(breach_url, params=payload)
   
   return breaches_response
@@ -103,10 +105,13 @@ def check_account_breaches(breach_response, account):
   # Checking for breaches 
   if r.status_code == 404:
     print("%s not found in a breach." %account)
+    
   elif r.status_code == 200:
     data = r.json()
     print('Breach Found for: %s' %account)
     num_breaches = len(data)
+    breach_info['num_breaches'] = num_breaches
+    
     for d in data:
         #   We only really want the name and date of the breach
         breach = d['Name']
@@ -133,10 +138,13 @@ def check_account_pastes(paste_response, account):
   # Checking for pastes 
   if r.status_code == 404:
     print("%s not found in a paste." %account)
+    
   elif r.status_code == 200:
     data = r.json()
     print('Paste Found for: %s' %account)
     num_pastes = len(data)
+    paste_info['num_pastes'] = num_pastes
+    
     for d in data:
         # We only really want the name and date of the paste
         source = d['Source']
@@ -154,6 +162,8 @@ def check_account_pastes(paste_response, account):
 
 def hibp_checker(keyfile):
   
+  # Create nested dictionary
+  output_dict = {}
   
   # Get accounts
   account_dict = get_accounts()
@@ -161,26 +171,40 @@ def hibp_checker(keyfile):
   # Submit each account for pastes and breaches
   for url, accounts in account_dict.items():
 
-      # Set up logfile
-    logfile = "output_files/" + url + "_accountlog" + str(datetime.datetime.now()) + ".log"
+     # Set up logfile
+    logfile = "hibp_output.log"
     output_file = open(logfile,"a+")
-
+    
+    # Create nested dict as key
     for account in accounts:
+      
+      # Add to nested dict
+      output_dict[account] = {}
+      
+      # Submit account for breaches and pastes
       time.sleep(1.5)
       breach_result = submit_account_breaches(account, keyfile)
       time.sleep(3)
       paste_result = submit_account_pastes(account, keyfile)
       time.sleep(1.5)
 
-      # Check results
+      # Check results on breaches and pastes
       breach_info = check_account_breaches(breach_result, account)
       paste_info = check_account_pastes(paste_result, account)
 
-      # Output results to file
-      output_file.write("\n:::" + str(datetime.datetime.now()) + ":::\n:::" + account + ":::\n\n" + breach_info + "\n\n" + paste_info + "\n-----------------------\n\n")
+      # Output breach and paste info to file      
+      output_file.write(":::URL:" + url + ":::Account:" + account + ":::Breach_Count:" + breach_info['num_breaches'] + ":::Breach_Detail:" + str(breach_info['breaches']) + ":::Paste_Count:" + paste_info['num_pastes'] + ":::Paste_Detail:" + paste_info['pastes']) + ":::")
 
+      # Output breach and paste info to nested dict
+      output_dict[account]['URL'] = url
+      output_dict[account]['Breach_Count'] = breach_info['num_breaches']
+      output_dict[account]['Breach_Detail'] = breach_info['breaches']
+      output_dict[account]['Paste_Count'] = paste_info['num_pastes']
+      output_dict[account]['Paste_Info'] = paste_info['pastes']
+      
+    # Close output file
     output_file.close()
   
-  return 
+  return output_dict
 
 
