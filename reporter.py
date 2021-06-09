@@ -22,7 +22,7 @@ def report(analysis_dict):
   total_pastes = 0
   
   # Populate counter vars 
-  for url, stats in results_dict.items():
+  for url, stats in analysis_dict.items():
     total_accounts += stats['Total_Accounts']
     total_breaches += stats['Breached_Accounts']
     total_pastes += stats['Pasted_Accounts']
@@ -32,10 +32,35 @@ def report(analysis_dict):
   print("Total Accounts Scraped: " + str(total_accounts))
   print("Total Accounts Breached: " + str(total_breaches))
   print("Total Accounts Pasted: " + str(total_pastes)) 
-  
-  # Print Divider
-  print("\n-------------------------------------------------------")
+  print("-------------------------------------------------------")
 
+
+  # Print individual URL stats
+  for url, stats in analysis_dict.items():
+    print("\n------------------")
+    print("URL: " + url)
+    
+    # Get our exposure rate for URL
+    if ( stats['Total_Breaches'] + stats['Total_Pastes'] > 0 ) and stats['Total_Accounts'] > 0:
+      exposure = float(stats['Total_Breaches'] + stats['Total_Pastes']) / float(stats['Total_Accounts'])
+      print("Exposure Rate: " + str(exposure) + "%")
+      print("Accounts: " + str(stats['Total_Accounts']))
+      print("Breached Accounts: " + str(stats['Total_Breaches']))
+      print("Pasted Accounts: " + str(stats['Total_Pastes']))
+
+      
+    elif ( stats['Total_Accounts'] ) == 0:
+      print("No Accounts Found for URL ")
+      
+    else: 
+      print("Exposure Rate: 0%")
+      print("Accounts: " + str(stats['Total_Accounts']))
+    
+    # Print end of section 
+    print("------------------")
+  
+  
+  return
     
 
 
