@@ -23,10 +23,10 @@ def main(argv):
 
     while True:
         # Run URL scraper
-        webwork.webscraper(args.URL)
+        account_dict = webwork.webscraper(args.URL)
 
         # Run HIBP routine
-        main_dict = hibp.hibp_checker(args.hibp_keyfile)
+        main_dict = hibp.hibp_checker(args.hibp_keyfile, account_dict)
         
         # Run analysis
         reporter.analyze(main_dict)
