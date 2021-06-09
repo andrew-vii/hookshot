@@ -9,6 +9,36 @@ import subprocess
 import datetime
 import argparse
 
+def report(analysis_dict):
+  
+  # Print report header
+  print("-------------------------------------------------------")
+  print("HOOKSHOT Breach/Paste Report Analysis") 
+  print("------------------")
+  
+  # Set up counter vars
+  total_accounts = 0
+  total_breaches = 0
+  total_pastes = 0
+  
+  # Populate counter vars 
+  for url, stats in results_dict.items():
+    total_accounts += stats['Total_Accounts']
+    total_breaches += stats['Breached_Accounts']
+    total_pastes += stats['Pasted_Accounts']
+    
+  # Print Report Summary
+  print("Total URLs Scraped: " + str(len(analysis_dict.keys())))
+  print("Total Accounts Scraped: " + str(total_accounts))
+  print("Total Accounts Breached: " + str(total_breaches))
+  print("Total Accounts Pasted: " + str(total_pastes)) 
+  
+  # Print Divider
+  print("\n-------------------------------------------------------")
+
+    
+
+
 def analyze(results_dict):
   
   # Make our main nested dict structure
@@ -36,11 +66,10 @@ def analyze(results_dict):
       analysis_dict[info['URL']]['Pasted_Accounts'] += 1
       
     # Increment the total account count for the URL
-    analysis_dict[info['Total_Accounts'] += 1
-    
-    
+    analysis_dict[info['URL']['Total_Accounts'] += 1  
       
 
-  return
+  return analysis_dict
     
-    
+
+                  
