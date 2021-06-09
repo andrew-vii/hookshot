@@ -73,8 +73,14 @@ def check_URL(URL, input_type):
   return status, url_list
 
 def webscraper(URL):
+  # Set up our list and dict
+  output_dict = {}
   url_list = []
+  
+  # Check whether we received a single URL or a list
   input_type = check_input(URL)
+  
+  # Check all our URLs to make sure we can reach them 
   status, url_list = check_URL(URL, input_type)
 
   # Run scrapes on target URLs
@@ -98,22 +104,33 @@ def webscraper(URL):
       i = url.strip()
       basename = os.path.basename(i)
       output_file = "account_files/" + basename + "_emails.txt"
+      
+      # Check output file size to see if our subprocess has completed
       if (os.stat(output_file).st_size < 1):
         time.sleep(10)
         print("Waiting on scrape for " + url + " to complete...")
       count += 1
 
-  # Wrap up and output count of good scrapes
+  # Read into our nested dict and output count of good scrapes
   print("Scrapes complete!")
   good_scrapes = 0
   for url in url_list:
+    
+    # Strip line and get the filename
     i = url.strip()
     basename = os.path.basename(i)
     output_file = "account_files/" + basename + "_emails.txt"
+    
+    # Check if we outputted data to the file
     if (os.stat(output_file).st_size < 1):
       good_scrapes += 1
+      
+    # Add URL and accounts scraped to the nested dict
+    with open(output_file) as f: 
+      output_dict[url] = f.read().splitlines()
+    
 
-  return
+  return output_dict
     
 
 
