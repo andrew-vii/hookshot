@@ -17,7 +17,6 @@ import webwork as webwork
 def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument("hibp_keyfile", type=str, help="HIBP API Key File")
-    # parser.add_argument("ba_keyfile", type=str, help="HIBP API Key File")
     parser.add_argument("URL", type=str, help="Target URL")
     args = parser.parse_args()
 
