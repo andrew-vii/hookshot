@@ -83,14 +83,14 @@ def submit_account_pastes(account, api_key_file):
              'user-agent': 'Hookshot'
             }
   
-  # Set URL for account breaches
-  breach_url = 'https://haveibeenpwned.com/api/v3/pasteaccount/' + account
+  # Set URL for account pastes
+  paste_url = 'https://haveibeenpwned.com/api/v3/pasteaccount/' + account
   
   # Submit our GET request
   print("Submitting paste request for account: " + account)
-  breaches_response = requests.get(breach_url, params=payload)
+  pastes_response = requests.get(paste_url, params=payload)
   
-  return breaches_response
+  return pastes_response
 
 
 def check_account_breaches(breach_response, account):
