@@ -160,13 +160,13 @@ def check_account_pastes(paste_response, account):
   return paste_info
 
 
-def hibp_checker(keyfile):
+def hibp_checker(keyfile, account_dict):
   
   # Create nested dictionary
   output_dict = {}
   
-  # Get accounts
-  account_dict = get_accounts()
+  # Get accounts - not needed after adding the nested dict output to the webscraper
+  #account_dict = get_accounts()
   
   # Submit each account for pastes and breaches
   for url, accounts in account_dict.items():
