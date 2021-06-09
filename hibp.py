@@ -25,7 +25,7 @@ def get_api_key(api_file):
   
   return api_key
 
-
+# Deprecated now that webscraper outputs an account dict
 def get_accounts():
   account_dict = {}
   
