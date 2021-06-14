@@ -135,7 +135,7 @@ def webscraper(URL):
       # Check for email formatting -- don't add if its a bad match
       regexp = re.compile(r'[\w\d.]*@[\w]*.[\w]*')
       if regexp.search(str(line_curr)):
-        output_dict[url] = line_curr
+        output_dict[] = line_curr
     
 
   return output_dict
