@@ -74,7 +74,8 @@ def analyze(results_dict):
   #account_dict = hibp.get_accounts()
   
   # Make our list of URLs the keys in the nested dict and build keys for nested dict
-  for url, accounts in results_dict.items():
+  for url_start, accounts in results_dict.items():
+    url = url_start.strip()
     analysis_dict[url] = {}
     analysis_dict[url]['Breached_Accounts'] = 0
     analysis_dict[url]['Pasted_Accounts'] = 0
