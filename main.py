@@ -12,6 +12,7 @@ import json
 import requests
 import hibp as hibp
 import webwork as webwork
+import reporter as reporter
 
 
 def main(argv):
