@@ -29,12 +29,12 @@ def check_URL(URL, input_type):
   url_list = []
   status = 0
   if input_type == 1:
-    time.sleep(0.5)
+    time.sleep(1)
     print("Checking Single URL (" + URL + ")...")
     url_list.append(URL)
     check_response = requests.get(url_list[0] + "/")
     
-    if check_response.status_code == 200:
+    if check_response.status_code == 200 or check_response.status_code == 403:
       print("URL Confirmed Reachable!")
       status = 1
     else:
@@ -49,12 +49,12 @@ def check_URL(URL, input_type):
       url_dictionary = { url.strip() : 0 for url in url_list }
     for c in url_list:
       i = c.strip()
-      time.sleep(0.1)
+      time.sleep(0.5)
       print("Checking " + i.strip() + "...")
       check_url = i.strip()
       check_response = requests.get(check_url)
     
-      if check_response.status_code == 200:
+      if check_response.status_code == 200 or check_response.status_code == 403:
         print("URL Confirmed Reachable!")
         url_dictionary[i] = 1
       else:
