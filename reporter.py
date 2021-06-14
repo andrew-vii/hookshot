@@ -8,6 +8,7 @@ import time
 import subprocess
 import datetime
 import argparse
+import hibp as hibp
 
 def report(analysis_dict):
   
@@ -69,11 +70,11 @@ def analyze(results_dict):
   # Make our main nested dict structure
   analysis_dict = {}
   
-  # Pull our dict with filenames as key and accounts listed as values
-  account_dict = hibp.get_accounts()
+  # Pull our dict with filenames as key and accounts listed as values - deprecated
+  #account_dict = hibp.get_accounts()
   
   # Make our list of URLs the keys in the nested dict and build keys for nested dict
-  for url, accounts in account_dict.items():
+  for url, accounts in results_dict.items():
     analysis_dict[url] = {}
     analysis_dict[url]['Breached_Accounts'] = 0
     analysis_dict[url]['Pasted_Accounts'] = 0
