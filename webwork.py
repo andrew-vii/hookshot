@@ -8,6 +8,7 @@ import time
 import subprocess
 import datetime
 import argparse
+import re
 
 # Check our input (single URL or file) 
 def check_input(URL):
@@ -28,6 +29,7 @@ def check_URL(URL, input_type):
   url_list = []
   status = 0
   if input_type == 1:
+    time.sleep(0.5)
     print("Checking Single URL (" + URL + ")...")
     url_list.append(URL)
     check_response = requests.get(url_list[0] + "/")
@@ -126,8 +128,14 @@ def webscraper(URL):
       good_scrapes += 1
       
     # Add URL and accounts scraped to the nested dict
-    with open(output_file) as f: 
-      output_dict[url] = f.read().splitlines()
+    with open(output_file) as f:
+
+      line_curr = f.read().splitlines()
+
+      # Check for email formatting -- don't add if its a bad match
+      regexp = re.compile(r'[\w\d.]*@[\w]*.[\w]*')
+      if regexp.search(str(line_curr)):
+        output_dict[url] = line_curr
     
 
   return output_dict

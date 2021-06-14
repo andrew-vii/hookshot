@@ -25,7 +25,7 @@ def main(argv):
 
     # Run HIBP routine
     main_dict = hibp.hibp_checker(args.hibp_keyfile, account_dict)
-        
+
     # Run analysis
     analysis_dict = reporter.analyze(main_dict)
         
