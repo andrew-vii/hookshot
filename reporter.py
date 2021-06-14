@@ -91,7 +91,7 @@ def analyze(results_dict):
       analysis_dict[info['URL']]['Pasted_Accounts'] += 1
       
     # Increment the total account count for the URL
-    analysis_dict[info['URL']['Total_Accounts'] += 1  
+    analysis_dict[info['URL']]['Total_Accounts'] += 1  
       
 
   return analysis_dict
