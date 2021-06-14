@@ -187,7 +187,7 @@ def hibp_checker(keyfile, account_dict):
         #output_file.write(":::URL:" + url + ":::Account:" + account + ":::Breach_Count:" + breach_info['num_breaches'] + ":::Breach_Detail:" + str(breach_info['breaches']) + ":::Paste_Count:" + paste_info['num_pastes'] + ":::Paste_Detail:" + str(paste_info['pastes']) + ":::")
 
         # Output breach and paste info to nested dict
-        output_dict[account]['URL'] = url
+        output_dict[account]['URL'] = url.strip()
         output_dict[account]['Breach_Count'] = breach_info['num_breaches']
         output_dict[account]['Breach_Detail'] = breach_info['breaches']
         output_dict[account]['Paste_Count'] = paste_info['num_pastes']
