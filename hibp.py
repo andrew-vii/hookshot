@@ -195,7 +195,6 @@ def hibp_checker(keyfile, account_dict):
       
     # Close output file
     output_file.close()
-  
   return output_dict
 
 
