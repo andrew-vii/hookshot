@@ -101,7 +101,7 @@ def webscraper(URL):
   # Give scrapes time to finish and check output file size for completion
   count = 0
   time.sleep(5)
-  while count < 50:
+  while count < 20:
     for url in url_list:
       i = url.strip()
       basename = os.path.basename(i)
@@ -109,7 +109,7 @@ def webscraper(URL):
       
       # Check output file size to see if our subprocess has completed
       if (os.stat(output_file).st_size < 1):
-        time.sleep(10)
+        time.sleep(30)
         print("Waiting on scrape for " + url + " to complete...")
       count += 1
 
