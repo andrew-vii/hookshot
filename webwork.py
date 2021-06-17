@@ -61,7 +61,7 @@ def check_URL(URL, input_type):
         print("Error Received: " + str(check_response.status_code))
         url_dict[i] = 0
       
-    if 0 in url_dictionary.values():
+    if 0 in url_dict.values():
       print("Error reaching one or more URLs")
       status = 0
     else:
