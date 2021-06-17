@@ -26,27 +26,26 @@ def check_input(URL):
 
 # Check that we can reach the URL
 def check_URL(URL, input_type):
-  url_list = []
-  status = 0
+  url_dict = {}
   if input_type == 1:
     time.sleep(1)
     print("Checking Single URL (" + URL + ")...")
-    url_list.append(URL)
-    check_response = requests.get(url_list[0] + "/")
+    url_dict[URL] = 0
+    check_response = requests.get(URL + "/")
     
     if check_response.status_code == 200 or check_response.status_code == 403:
       print("URL Confirmed Reachable!")
-      status = 1
+      url_dict[URL] = 1
     else:
       print("Error Reaching URL")
       print("Error Received: " + str(check_response.status_code))
-      status = 0 
+      url_dict[URL] = 0
 
   elif input_type == 2:
     print("Checking list of URLs to reach")
     with open(URL) as f:
       url_list = f.readlines()
-      url_dictionary = { url.strip() : 0 for url in url_list }
+      url_dict = { url.strip() : 0 for url in url_list }
     for c in url_list:
       i = c.strip()
       time.sleep(0.5)
@@ -56,11 +55,11 @@ def check_URL(URL, input_type):
     
       if check_response.status_code == 200 or check_response.status_code == 403:
         print("URL Confirmed Reachable!")
-        url_dictionary[i] = 1
+        url_dict[i] = 1
       else:
         print("Error Reaching URL")
         print("Error Received: " + str(check_response.status_code))
-        url_dictionary[i] = 0
+        url_dict[i] = 0
       
     if 0 in url_dictionary.values():
       print("Error reaching one or more URLs")
@@ -72,7 +71,7 @@ def check_URL(URL, input_type):
   else:
     print("Unable to load URL(s) to check")
   
-  return status, url_list
+  return url_dict
 
 def webscraper(URL):
   # Set up our list and dict
@@ -83,10 +82,10 @@ def webscraper(URL):
   input_type = check_input(URL)
   
   # Check all our URLs to make sure we can reach them 
-  status, url_list = check_URL(URL, input_type)
+  url_dict = check_URL(URL, input_type)
 
   # Run scrapes on target URLs
-  for url in url_list:
+  for url in url_dict.keys():
     i = url.strip()
     print("Scraping " + i + "...")
     basename = os.path.basename(i)
@@ -101,8 +100,8 @@ def webscraper(URL):
   # Give scrapes time to finish and check output file size for completion
   count = 0
   time.sleep(5)
-  while count < 30:
-    for url in url_list:
+  while count < 50:
+    for url in url_dict.keys():
       i = url.strip()
       basename = os.path.basename(i)
       output_file = "account_files/" + basename + "_emails.txt"
@@ -116,7 +115,7 @@ def webscraper(URL):
   # Read into our nested dict and output count of good scrapes
   print("Scrapes complete!")
   good_scrapes = 0
-  for url in url_list:
+  for url in url_dict.keys():
     
     # Strip line and get the filename
     i = url.strip()
