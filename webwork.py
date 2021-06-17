@@ -32,14 +32,14 @@ def check_URL(URL, input_type):
     print("Checking Single URL (" + URL + ")...")
     url_dict[URL] = 0
     check_response = requests.get(URL + "/")
-    
+
+    # Check our reponse and output the code we get for the URL
     if check_response.status_code == 200 or check_response.status_code == 403 or check_response.status_code == 406:
-      print("URL Confirmed Reachable!")
-      url_dict[URL] = 1
+      print("Received Code " + str(check_response.status_code) + " -- Reachable!")
+      url_dict[URL] = check_response.status_code
     else:
-      print("Error Reaching URL")
-      print("Error Received: " + str(check_response.status_code))
-      url_dict[URL] = 0
+      print("Error Reaching URL -- Received Code " + str(check_response.status_code))
+      url_dict[URL] = check_response.status_code
 
   elif input_type == 2:
     print("Checking list of URLs to reach")
@@ -50,18 +50,21 @@ def check_URL(URL, input_type):
       i = c.strip()
       time.sleep(0.5)
       print("Checking " + i.strip() + "...")
+
+      # Clean up the url
       check_url = i.strip()
-      check_response = requests.get(check_url)
-    
+
+      # Send our GET request with a Windows Firefox UAS (fixes a 406 error)
+      check_response = requests.get(check_url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246"})
+
       if check_response.status_code == 200 or check_response.status_code == 403 or check_response.status_code == 406:
-        print("URL Confirmed Reachable!")
-        url_dict[i] = 1
+        print("Received Code " + str(check_response.status_code) + " -- Reachable!")
+        url_dict[i] = check_response.status_code
       else:
-        print("Error Reaching URL")
-        print("Error Received: " + str(check_response.status_code))
-        url_dict[i] = 0
+        print("Error Reaching URL -- Received Code " + str(check_response.status_code))
+        url_dict[i] = check_response.status_code
       
-    if 0 in url_dict.values():
+    if 404 in url_dict.values():
       print("Error reaching one or more URLs")
       status = 0
     else:
@@ -115,17 +118,13 @@ def webscraper(URL):
 
   # Read into our nested dict and output count of good scrapes
   print("Scrapes complete!")
-  good_scrapes = 0
+
   for url in url_list:
     
     # Strip line and get the filename
     i = url.strip()
     basename = os.path.basename(i)
     output_file = "account_files/" + basename + "_emails.txt"
-    
-    # Check if we outputted data to the file
-    if (os.stat(output_file).st_size < 1):
-      good_scrapes += 1
       
     # Add URL and accounts scraped to the nested dict
     with open(output_file) as f:
@@ -136,6 +135,12 @@ def webscraper(URL):
       regexp = re.compile(r'[a-zA-Z][\w.]*@[\w]*.[\w]*')
       if regexp.search(str(line_curr)):
         output_dict[i] = line_curr
-    
+
+      # If no matching emails, throw a blank string in for accounts found
+      else:
+        output_dict[i] = ''
+
+  # Debugging
+  print(output_dict)
 
   return output_dict
