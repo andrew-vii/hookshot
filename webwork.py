@@ -96,9 +96,10 @@ def webscraper(URL):
     output_file = "account_files/" + basename + "_emails.txt"
     print("Output File: " + output_file)
     url_new = i + "/"
+    uas = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246'
 
-    # Run our scrapes in parallel
-    scrape_command = "cewl %s -n -d 3 -e --email_file %s" % (url_new, output_file)
+    # Run our scrapes in parallel -- best results with depth at 2 (faster) or 3 (longer, but more thorough)
+    scrape_command = "cewl %s --ua %s -n -d 3 -e --email_file %s" % (url_new, uas, output_file)
     p = subprocess.Popen(scrape_command.split(), stdout=subprocess.PIPE)
 
   # Give scrapes time to finish and check output file size for completion
@@ -140,7 +141,5 @@ def webscraper(URL):
       else:
         output_dict[i] = ''
 
-  # Debugging
-  print(output_dict)
 
   return output_dict
