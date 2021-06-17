@@ -95,7 +95,7 @@ def webscraper(URL):
     url_new = i + "/"
 
     # Run our scrapes in parallel
-    scrape_command = "cewl %s -n -d 2 -e --email_file %s" % (url_new, output_file)
+    scrape_command = "cewl %s -n -d 3 -e --email_file %s" % (url_new, output_file)
     p = subprocess.Popen(scrape_command.split(), stdout=subprocess.PIPE)
 
   # Give scrapes time to finish and check output file size for completion
