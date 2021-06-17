@@ -68,7 +68,7 @@ def check_URL(URL, input_type):
       print("Error reaching one or more URLs")
       status = 0
     else:
-      print("All URLs Reachable!")
+      print("All " + str(len(url_list)) + " URLs Reachable!")
       status = 1
       
   else:
