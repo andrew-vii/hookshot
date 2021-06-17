@@ -33,7 +33,7 @@ def check_URL(URL, input_type):
     url_dict[URL] = 0
     check_response = requests.get(URL + "/")
     
-    if check_response.status_code == 200 or check_response.status_code == 403:
+    if check_response.status_code == 200 or check_response.status_code == 403 or check_response.status_code == 406:
       print("URL Confirmed Reachable!")
       url_dict[URL] = 1
     else:
@@ -53,7 +53,7 @@ def check_URL(URL, input_type):
       check_url = i.strip()
       check_response = requests.get(check_url)
     
-      if check_response.status_code == 200 or check_response.status_code == 403:
+      if check_response.status_code == 200 or check_response.status_code == 403 or check_response.status_code == 406:
         print("URL Confirmed Reachable!")
         url_dict[i] = 1
       else:
