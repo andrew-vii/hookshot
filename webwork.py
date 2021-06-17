@@ -83,9 +83,10 @@ def webscraper(URL):
   
   # Check all our URLs to make sure we can reach them 
   url_dict = check_URL(URL, input_type)
+  url_list = url_dict.keys()
 
   # Run scrapes on target URLs
-  for url in url_dict.keys():
+  for url in url_list:
     i = url.strip()
     print("Scraping " + i + "...")
     basename = os.path.basename(i)
@@ -101,7 +102,7 @@ def webscraper(URL):
   count = 0
   time.sleep(5)
   while count < 50:
-    for url in url_dict.keys():
+    for url in url_list:
       i = url.strip()
       basename = os.path.basename(i)
       output_file = "account_files/" + basename + "_emails.txt"
@@ -115,7 +116,7 @@ def webscraper(URL):
   # Read into our nested dict and output count of good scrapes
   print("Scrapes complete!")
   good_scrapes = 0
-  for url in url_dict.keys():
+  for url in url_list:
     
     # Strip line and get the filename
     i = url.strip()
