@@ -34,7 +34,7 @@ def report(analysis_dict, output_file):
     total_uniques += stats['Private_Accounts']
     
   # Print Report Summary
-  report_out += "\nTotal URLs Loaded: " str(sum(len(files) for _, _, files in os.walk('account_files')))
+  report_out += "\nTotal URLs Loaded: " + str(sum(len(files) for _, _, files in os.walk('account_files')))
   report_out += "\nTotal URLs Scraped: " + str(len(analysis_dict.keys()))
   report_out += "\nTotal Accounts Scraped: " + str(total_accounts)
   report_out += "\nTotal Accounts Breached: " + str(total_breaches)
