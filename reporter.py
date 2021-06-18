@@ -43,7 +43,7 @@ def report(analysis_dict):
     
     # Get our exposure rate for URL
     if ( stats['Breached_Accounts'] + stats['Pasted_Accounts'] > 0 ) and stats['Total_Accounts'] > 0:
-      exposure = str(round(100 * float(stats['Breached_Accounts'] + stats['Pasted_Accounts']) / float(stats['Total_Accounts']),4))
+      exposure = str(round(100 * float(stats['Breached_Accounts'] + stats['Pasted_Accounts']) / float(stats['Total_Accounts']),1))
 
       print("Exposure Rate: " + exposure + "%")
       print("Accounts: " + str(stats['Total_Accounts']))

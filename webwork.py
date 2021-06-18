@@ -134,13 +134,14 @@ def webscraper(URL):
       line_curr = f.read().splitlines()
 
       # Check for email formatting -- don't add if its a bad match
-      regexp = re.compile(r'[a-zA-Z][\w.]*@[\w]*.[a-zA-Z]*')
+      regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
       if regexp.search(str(line_curr)):
         output_dict[i] = line_curr
 
       # If no matching emails, throw a blank string in for accounts found
       else:
-        output_dict[i] = ''
+        output_dict[i] = '-'
 
+  print(output_dict)
 
   return output_dict
