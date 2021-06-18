@@ -11,12 +11,14 @@ import re
 import argparse
 import hibp as hibp
 
-def report(analysis_dict):
+def report(analysis_dict, output_file):
+  
+  report_out = ''
   
   # Print report header
-  print("-------------------------------------------------------")
-  print("HOOKSHOT Breach/Paste Report Analysis") 
-  print("------------------")
+  report_out += "\n-------------------------------------------------------"
+  report_out += "\nHOOKSHOT Breach/Paste Report Analysis"
+  report_out += "\n------------------"
   
   # Set up counter vars
   total_accounts = 0
@@ -32,41 +34,48 @@ def report(analysis_dict):
     total_uniques += stats['Private_Accounts']
     
   # Print Report Summary
-  print("Total URLs Loaded: " str(sum(len(files) for _, _, files in os.walk('account_files')))
-  print("Total URLs Scraped: " + str(len(analysis_dict.keys())))
-  print("Total Accounts Scraped: " + str(total_accounts))
-  print("Total Accounts Breached: " + str(total_breaches))
-  print("Total Accounts Pasted: " + str(total_pastes))
-  print("Total Corporate Accounts Exposed: " + str(total_uniques))
-  print("-------------------------------------------------------\n\n\n")
+  report_out += "\nTotal URLs Loaded: " str(sum(len(files) for _, _, files in os.walk('account_files')))
+  report_out += "\nTotal URLs Scraped: " + str(len(analysis_dict.keys()))
+  report_out += "\nTotal Accounts Scraped: " + str(total_accounts)
+  report_out += "\nTotal Accounts Breached: " + str(total_breaches)
+  report_out += "\nTotal Accounts Pasted: " + str(total_pastes)
+  report_out += "\nTotal Corporate Accounts Exposed: " + str(total_uniques)
+  report_out += "\n-------------------------------------------------------\n\n\n"
 
 
   # Print individual URL stats
   for url, stats in analysis_dict.items():
-    print("\n------------------")
-    print("URL: " + url)
+    report_out += "\n------------------"
+    report_out += "\nURL: " + url
     
     # Get our exposure rate for URL
     if ( stats['Breached_Accounts'] + stats['Pasted_Accounts'] > 0 ) and stats['Total_Accounts'] > 0:
       exposure = str(round(100 * float(stats['Breached_Accounts'] + stats['Pasted_Accounts']) / float(stats['Total_Accounts']),1))
 
-      print("Exposure Rate: " + exposure + "%")
-      print("Accounts: " + str(stats['Total_Accounts']))
-      print("Breached Accounts: " + str(stats['Breached_Accounts']))
-      print("Pasted Accounts: " + str(stats['Pasted_Accounts']))
-      print("Exposed Corporate Accounts (.org or .gop): " + str(stats['Private_Accounts']))
+      report_out += "\nExposure Rate: " + exposure + "%"
+      report_out += "\nAccounts: " + str(stats['Total_Accounts'])
+      report_out += "\nBreached Accounts: " + str(stats['Breached_Accounts'])
+      report_out += "\nPasted Accounts: " + str(stats['Pasted_Accounts'])
+      report_out += "\nExposed Corporate Accounts (.org or .gop): " + str(stats['Private_Accounts'])
 
       
     elif ( stats['Total_Accounts'] ) == 0:
-      print("No Accounts Found for URL ")
+      report_out += "\nNo Accounts Found for URL "
       
     else: 
-      print("Exposure Rate: 0%")
-      print("Accounts: " + str(stats['Total_Accounts']))
+      report_out += "\nExposure Rate: 0%"
+      report_out += "\nAccounts: " + str(stats['Total_Accounts'])
     
     # Print end of section 
-    print("------------------\n")
-  
+    report_out += "\n------------------\n"
+
+  # Print full report
+  print(report_out)
+
+  # Output report to file
+  o = open(output_file, "w")
+  o.write(report_out)
+  o.close()
   
   return
     
