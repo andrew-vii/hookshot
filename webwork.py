@@ -69,7 +69,8 @@ def check_URL(URL, input_type):
       print("Error reaching one or more URLs")
       status = 0
     else:
-      print("All " + str(len(url_list)) + " URLs Reachable!")
+      print("All " + str(len(url_list)) + " URLs Reachable!\n\n")
+      time.sleep(1)
       status = 1
       
   else:
@@ -142,6 +143,5 @@ def webscraper(URL):
       else:
         output_dict[i] = '-'
 
-  print(output_dict)
 
   return output_dict

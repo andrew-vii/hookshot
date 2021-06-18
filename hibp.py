@@ -172,19 +172,16 @@ def hibp_checker(keyfile, account_dict):
         # Add to nested dict
         output_dict[account] = {}
       
-        # Submit account for breaches and pastes
-        time.sleep(1.5)
+        # Submit account for breaches and check
+        time.sleep(1)
         breach_result = submit_account_breaches(account, keyfile)
-        time.sleep(3)
-        paste_result = submit_account_pastes(account, keyfile)
-        time.sleep(1.5)
-
-        # Check results on breaches and pastes
         breach_info = check_account_breaches(breach_result, account)
-        paste_info = check_account_pastes(paste_result, account)
 
-        # Output breach and paste info to file - deprecated
-        #output_file.write(":::URL:" + url + ":::Account:" + account + ":::Breach_Count:" + breach_info['num_breaches'] + ":::Breach_Detail:" + str(breach_info['breaches']) + ":::Paste_Count:" + paste_info['num_pastes'] + ":::Paste_Detail:" + str(paste_info['pastes']) + ":::")
+        # Submit account for pastes and check
+        time.sleep(2)
+        paste_result = submit_account_pastes(account, keyfile)
+        paste_info = check_account_pastes(paste_result, account)
+        time.sleep(1)
 
         # Output breach and paste info to nested dict
         output_dict[account]['URL'] = url.strip()
