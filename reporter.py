@@ -32,12 +32,13 @@ def report(analysis_dict):
     total_uniques += stats['Private_Accounts']
     
   # Print Report Summary
+  print("Total URLs Loaded: " str(sum(len(files) for _, _, files in os.walk('account_files')))
   print("Total URLs Scraped: " + str(len(analysis_dict.keys())))
   print("Total Accounts Scraped: " + str(total_accounts))
   print("Total Accounts Breached: " + str(total_breaches))
   print("Total Accounts Pasted: " + str(total_pastes))
   print("Total Corporate Accounts Exposed: " + str(total_uniques))
-  print("-------------------------------------------------------")
+  print("-------------------------------------------------------\n\n\n")
 
 
   # Print individual URL stats
@@ -64,7 +65,7 @@ def report(analysis_dict):
       print("Accounts: " + str(stats['Total_Accounts']))
     
     # Print end of section 
-    print("------------------")
+    print("------------------\n")
   
   
   return
