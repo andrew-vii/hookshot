@@ -102,7 +102,7 @@ def webscraper(URL):
     output_file = "account_files/" + basename + "_emails.txt"
     print("Output File: " + output_file)
     newfile = open(output_file, "x")
-    sleep(1)
+    time.sleep(1)
     newfile.close()
 
     # Set up request parameters
