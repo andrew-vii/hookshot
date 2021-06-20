@@ -100,7 +100,8 @@ def webscraper(URL):
     basename = os.path.basename(i)
     output_file = "account_files/" + basename + "_emails.txt"
     print("Output File: " + output_file)
-    Path(output_file).touch()
+    Path(output_file.touch())
+    sleep(1)
 
     # Set up request parameters
     url_new = i + "/"
@@ -113,7 +114,7 @@ def webscraper(URL):
   # Give scrapes time to finish and check output file size for completion
   count = 0
   time.sleep(5)
-  while count < 20:
+  while count < 30:
     for url in url_list:
       i = url.strip()
       basename = os.path.basename(i)
