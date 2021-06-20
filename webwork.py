@@ -9,6 +9,7 @@ import subprocess
 import datetime
 import argparse
 import re
+from pathlib import Path
 
 
 # Check our input (single URL or file) 
@@ -94,9 +95,14 @@ def webscraper(URL):
   for url in url_list:
     i = url.strip()
     print("Scraping " + i + "...")
+
+    # Set up our output file
     basename = os.path.basename(i)
     output_file = "account_files/" + basename + "_emails.txt"
     print("Output File: " + output_file)
+    Path(output_file).touch()
+
+    # Set up request parameters
     url_new = i + "/"
     uas = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246'
 
