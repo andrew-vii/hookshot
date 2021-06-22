@@ -118,7 +118,7 @@ def webscraper(URL, depth):
     scrape_command = "cewl " + str(url_new) + " --ua '" + str(uas) + "' -n -d " + str(depth) + " -e --email_file " + str(output_file)
 
     # Run subprocess under our dict
-    process_dict[i] = subprocess.Popen(scrape_command, stdout=logvar, shell=True) #subprocess.PIPE)
+    process_dict[i] = subprocess.Popen(scrape_command, stdout=subprocess.PIPE, shell=True)
 
     # Debugging - check process status
     #print("Process Poll: " + str(process_dict[i].poll()))
