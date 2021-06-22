@@ -90,8 +90,16 @@ def webscraper(URL):
   url_dict = check_URL(URL, input_type)
   url_list = url_dict.keys()
 
+  counter = 0
+
   # Run scrapes on target URLs
   for url in url_list:
+
+    # Weird URL fix for loading too many at once
+    if counter > 100:
+      print("100 URLs Scraping -- Preventing Rate Limiting...")
+      time.sleep(300)
+      counter = 0
 
     # Check URL formatting
     i = url.strip()
@@ -101,7 +109,7 @@ def webscraper(URL):
     basename = os.path.basename(i)
     output_file = "account_files/" + basename + "_emails.txt"
     print("Output File: " + output_file)
-    newfile = open(output_file, "x")
+    newfile = open(output_file, "w+")
     time.sleep(1)
     newfile.close()
 
@@ -112,6 +120,7 @@ def webscraper(URL):
     # Run our scrapes in parallel -- best results with depth at 2 (faster) or 3 (longer, but more thorough)
     scrape_command = "cewl %s --ua %s -n -d 3 -e --email_file %s" % (url_new, uas, output_file)
     p = subprocess.Popen(scrape_command.split(), stdout=subprocess.PIPE)
+    counter += 1
 
   # Give scrapes time to finish and check output file size for completion
   count = 0
@@ -124,9 +133,9 @@ def webscraper(URL):
       
       # Check output file size to see if our subprocess has completed
       if (os.stat(output_file).st_size < 1):
-        time.sleep(30)
+        time.sleep(90)
         print("Waiting on scrape for " + url + " to complete...")
-      count += 1
+    count += 1
 
   # Read into our nested dict and output count of good scrapes
   print("Scrapes complete!")
