@@ -121,18 +121,17 @@ def webscraper(URL):
     process_dict[i] = subprocess.Popen(scrape_command, stdout=logvar, shell=True) #subprocess.PIPE)
 
     # Debugging - check process status
-    print("Process Poll: " + str(process_dict[i].poll()))
+    #print("Process Poll: " + str(process_dict[i].poll()))
     time.sleep(1)
 
-  while True:
-    print("Process Poll: " + str(process_dict[i].poll()))
-    time.sleep(10)
 
   while proc_complete == 0:
+
+    # Reset scrape count
     running_scrapes = 0
+
     for url in url_list:
       i = url.strip()
-      print("Process Poll: " + str(process_dict[i].poll()))
 
       if process_dict[i].poll() is None:
         proc_states[i] = 0
@@ -148,7 +147,7 @@ def webscraper(URL):
 
     else:
       proc_complete = 1
-      print("Scrapes complete!")
+      print("All Scrapes Complete!")
 
   for url in url_list:
     
