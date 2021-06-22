@@ -124,6 +124,8 @@ def webscraper(URL, depth):
     #print("Process Poll: " + str(process_dict[i].poll()))
     time.sleep(1)
 
+
+  proc_states = {}
   proc_complete = 0
   while proc_complete == 0:
 
