@@ -99,7 +99,7 @@ def webscraper(URL):
 
     # Check URL formatting
     i = url.strip()
-    print("Scraping " + i + "...")
+    print("\nScraping " + i + "...")
 
     # Set up our output file
     basename = os.path.basename(i)
