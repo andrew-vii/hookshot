@@ -78,7 +78,7 @@ def check_URL(URL, input_type):
   
   return url_dict
 
-def webscraper(URL):
+def webscraper(URL, depth):
 
   # Set up our list and dict
   output_dict = {}
@@ -115,7 +115,7 @@ def webscraper(URL):
 
     # Run our scrapes in parallel -- best results with depth at 2 (faster) or 3 (longer, but more thorough)
     # Set up scrape command
-    scrape_command = "cewl " + str(url_new) + " --ua '" + str(uas) + "' -n -d 3 -e --email_file " + str(output_file)
+    scrape_command = "cewl " + str(url_new) + " --ua '" + str(uas) + "' -n -d " + str(depth) + " -e --email_file " + str(output_file)
 
     # Run subprocess under our dict
     process_dict[i] = subprocess.Popen(scrape_command, stdout=logvar, shell=True) #subprocess.PIPE)
@@ -140,6 +140,7 @@ def webscraper(URL):
       else:
         proc_states[i] = 1
 
+    # If we're still waiting on scrapes, output how many and sleep for a minute
     if 0 in proc_states.values():
       proc_complete = 0
       print("Waiting on " + str(running_scrapes) + " scrapes to complete...")
