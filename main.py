@@ -19,7 +19,7 @@ def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument("hibp_keyfile", type=str, help="HIBP API Key File")
     parser.add_argument("URL", type=str, help="Target URL")
-    parser.add_argument("Depth", type=str, help="Cewl Spidering Depth (2 or 3 recommended")
+    parser.add_argument("depth", type=str, help="Cewl Spidering Depth (2 or 3 recommended")
     parser.add_argument("output_file", type=str, help="Output File")
     args = parser.parse_args()
 
