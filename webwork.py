@@ -79,6 +79,7 @@ def check_URL(URL, input_type):
   return url_dict
 
 def webscraper(URL):
+
   # Set up our list and dict
   output_dict = {}
   url_list = []
@@ -90,16 +91,11 @@ def webscraper(URL):
   url_dict = check_URL(URL, input_type)
   url_list = url_dict.keys()
 
-  counter = 0
+  # Set up process dict
+  process_dict = {}
 
   # Run scrapes on target URLs
   for url in url_list:
-
-    # Weird URL fix for loading too many at once
-    if counter > 100:
-      print("100 URLs Scraping -- Preventing Rate Limiting...")
-      time.sleep(300)
-      counter = 0
 
     # Check URL formatting
     i = url.strip()
@@ -118,27 +114,34 @@ def webscraper(URL):
     uas = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246'
 
     # Run our scrapes in parallel -- best results with depth at 2 (faster) or 3 (longer, but more thorough)
-    scrape_command = "cewl %s --ua %s -n -d 3 -e --email_file %s" % (url_new, uas, output_file)
-    p = subprocess.Popen(scrape_command.split(), stdout=subprocess.PIPE)
-    counter += 1
+    scrape_command = "cewl %s --ua %s -n -d 2 -e --email_file %s" % (url_new, uas, output_file)
+    process_dict[i] = subprocess.Popen(scrape_command.split(), stdout=subprocess.PIPE)
 
-  # Give scrapes time to finish and check output file size for completion
-  count = 0
-  time.sleep(5)
-  while count < 30:
+  # Check states of subprocesses for completion
+  proc_states = {}
+  proc_complete = 0
+
+  while proc_complete == 0:
+    running_scrapes = 0
     for url in url_list:
       i = url.strip()
-      basename = os.path.basename(i)
-      output_file = "account_files/" + basename + "_emails.txt"
-      
-      # Check output file size to see if our subprocess has completed
-      if (os.stat(output_file).st_size < 1):
-        time.sleep(90)
-        print("Waiting on scrape for " + url + " to complete...")
-    count += 1
 
-  # Read into our nested dict and output count of good scrapes
-  print("Scrapes complete!")
+      if process_dict[i].poll() is None:
+        proc_states[i] = 0
+        running_scrapes += 1
+
+      else:
+        proc_states[i] = 1
+
+    if 0 in proc_states.values():
+      proc_complete = 0
+      print("Waiting on " + str(running_scrapes) + " scrapes to complete...")
+      time.sleep(60)
+
+    else:
+      proc_complete = 1
+      print("Scrapes complete!")
+
 
   for url in url_list:
     
