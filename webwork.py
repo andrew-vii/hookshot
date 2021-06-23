@@ -118,13 +118,15 @@ def webscraper(URL, depth):
     scrape_command = "cewl " + str(url_new) + " --ua '" + str(uas) + "' -n -d " + str(depth) + " -e --email_file " + str(output_file)
 
     # Run subprocess under our dict
-    process_dict[i] = subprocess.Popen(scrape_command, stdout=subprocess.PIPE, shell=True)
+    # Using ulimit and nice to control CPU usage and process timeout
+    process_dict[i] = subprocess.Popen("ulimit -t 60; nice -n 15 " + scrape_command, stdout=subprocess.PIPE, shell=True)
 
     # Debugging - check process status
     #print("Process Poll: " + str(process_dict[i].poll()))
     time.sleep(1)
 
-
+  # Set up loop and variables
+  #counter = 0
   proc_states = {}
   proc_complete = 0
   while proc_complete == 0:
@@ -146,7 +148,16 @@ def webscraper(URL, depth):
     if 0 in proc_states.values():
       proc_complete = 0
       print("Waiting on " + str(running_scrapes) + " scrape(s) to complete...")
-      time.sleep(60)
+      time.sleep(10)
+      #counter += 1
+
+      # Check if subprocesses have timed out
+      #if counter > 30:
+        #print("Timeout Detected -- Killing Child Processes")
+        #for url in url_list:
+          #c = url.strip()
+          #process_dict[i].kill()
+          #proc_complete = 1
 
     else:
       proc_complete = 1
