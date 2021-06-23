@@ -150,7 +150,7 @@ def webscraper(URL, depth):
 
     else:
       proc_complete = 1
-      print("All Scrapes Complete!")
+      print("\nAll Scrapes Complete!\n")
 
   for url in url_list:
     
