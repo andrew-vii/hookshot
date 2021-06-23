@@ -145,7 +145,7 @@ def webscraper(URL, depth):
     # If we're still waiting on scrapes, output how many and sleep for a minute
     if 0 in proc_states.values():
       proc_complete = 0
-      print("Waiting on " + str(running_scrapes) + " scrapes to complete...")
+      print("Waiting on " + str(running_scrapes) + " scrape(s) to complete...")
       time.sleep(60)
 
     else:
