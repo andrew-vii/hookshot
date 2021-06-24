@@ -170,7 +170,8 @@ def webscraper(URL, depth):
       # Check for email formatting -- don't add if its a bad match
       regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
       if regexp.search(str(line_curr)):
-        output_dict[i] = line_curr
+        match = regexp.search(str(line_curr)).group(1)
+        output_dict[i] = match
 
       # If no matching emails, throw a blank string in for accounts found
       else:
