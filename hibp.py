@@ -168,7 +168,7 @@ def hibp_checker(keyfile, account_dict):
       # Double-check on email formatting
       regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
       if regexp.search(str(account)):
-        match_account = regexp.search(str(account)).group(1)
+        match_account = regexp.search(str(account)).group(0)
 
         # Add to nested dict
         output_dict[account] = {}
