@@ -166,21 +166,22 @@ def hibp_checker(keyfile, account_dict):
     for account in accounts:
 
       # Double-check on email formatting
-      regexp = re.compile(r'[\w\d.]*@[\w]*.[\w]*')
+      regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
       if regexp.search(str(account)):
+        match_account = regexp.search(str(account)).group(1)
 
         # Add to nested dict
         output_dict[account] = {}
       
         # Submit account for breaches and check
         time.sleep(1)
-        breach_result = submit_account_breaches(account, keyfile)
-        breach_info = check_account_breaches(breach_result, account)
+        breach_result = submit_account_breaches(match_account, keyfile)
+        breach_info = check_account_breaches(breach_result, match_account)
 
         # Submit account for pastes and check
         time.sleep(2)
-        paste_result = submit_account_pastes(account, keyfile)
-        paste_info = check_account_pastes(paste_result, account)
+        paste_result = submit_account_pastes(match_account, keyfile)
+        paste_info = check_account_pastes(paste_result, match_account)
         time.sleep(1)
 
         # Output breach and paste info to nested dict
