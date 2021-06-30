@@ -115,7 +115,7 @@ def webscraper(URL, depth):
 
     # Run our scrapes in parallel -- best results with depth at 2 (faster) or 3 (longer, but more thorough)
     # Set up scrape command
-    scrape_command = "cewl " + str(url_new) + " --ua '" + str(uas) + "' -n -d " + str(depth) + " -e --email_file " + str(output_file)
+    scrape_command = "cewl " + str(url_new) + " --ua '" + str(uas) + "' -n -d " + str(depth) + " -e " #--email_file " + str(output_file)
 
     # Run subprocess under our dict
     # Using ulimit and nice to control CPU usage and process timeout
@@ -123,6 +123,7 @@ def webscraper(URL, depth):
 
     # Optional - run scrapes in series using wait()
     process_dict[i].wait()
+    
     # Debugging - check process status
     #print("Process Poll: " + str(process_dict[i].poll()))
     time.sleep(1)
@@ -156,25 +157,44 @@ def webscraper(URL, depth):
       print("\nAll Scrapes Complete!\n")
 
   output_dict = {}
-  for url in url_list:
+  
+  # Grab output from subprocess module
+  for url, process in process_dict.items():
     
-    # Strip line and get the filename
     i = url.strip()
-    basename = os.path.basename(i)
-    output_file = "account_files/" + basename + "_emails.txt"
-      
-    # Add URL and accounts scraped to the nested dict
-    with open(output_file) as f:
-
-      line_curr = f.read().splitlines()
-
-      # Check for email formatting -- don't add if its a bad match
-      regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
-      if regexp.search(str(line_curr)):
-        output_dict[i] = regexp.findall(str(line_curr))
-
-      # If no matching emails, throw a blank string in for accounts found
+    
+    # Get output from subprocess
+    subproc_return = process.stdout.read()
+    
+    # Run regex against output, strip out only emails that match formatting
+    regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
+      if regexp.search(str(subproc_return)):
+        output_dict[i] = regexp.findall(str(subproc_return))
+  
+    # If no match, throw a placeholder in for url
       else:
         output_dict[i] = '-'
+  
+  # Grab output for output files
+  #for url in url_list:
+    
+    # Strip line and get the filename
+    #i = url.strip()
+    #basename = os.path.basename(i)
+    #output_file = "account_files/" + basename + "_emails.txt"
+      
+    # Add URL and accounts scraped to the nested dict
+    #with open(output_file) as f:
+
+      #line_curr = f.read().splitlines()
+
+      # Check for email formatting -- don't add if its a bad match
+      #regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
+      #if regexp.search(str(line_curr)):
+        #output_dict[i] = regexp.findall(str(line_curr))
+
+      # If no matching emails, throw a blank string in for accounts found
+      #else:
+        #output_dict[i] = '-'
 
   return output_dict
