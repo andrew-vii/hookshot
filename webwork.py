@@ -111,7 +111,24 @@ def webscraper(URL, depth):
 
     # Set up request parameters
     url_new = i + "/"
-    uas = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246'
+    uas_list = [
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36",
+      "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36",
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36",
+      "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322)",
+      "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)",
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36",
+      "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko",
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134",
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763",
+      "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; KTXN)"
+    ]
+
+    # Grab a random UAS from our list
+    uas = random.sample(uas_list, 1)
+
+    # Use single UAS without randomly changing -- this one works pretty well on most sites
+    #uas = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246'
 
     # Run our scrapes in parallel -- best results with depth at 2 (faster) or 3 (longer, but more thorough)
     # Set up scrape command
@@ -119,10 +136,10 @@ def webscraper(URL, depth):
 
     # Run subprocess under our dict
     # Using ulimit and nice to control CPU usage and process timeout
-    process_dict[i] = subprocess.Popen("ulimit -t 600; nice -n 15 " + scrape_command, stdout=subprocess.PIPE, shell=True)
+    process_dict[i] = subprocess.Popen("ulimit -t 1800; nice -n 15 " + scrape_command, stdout=subprocess.PIPE, shell=True)
 
     # Optional - run scrapes in series using wait()
-    process_dict[i].wait()
+    #process_dict[i].wait()
     
     # Debugging - check process status
     #print("Process Poll: " + str(process_dict[i].poll()))
@@ -173,7 +190,7 @@ def webscraper(URL, depth):
   
     # If no match, throw a placeholder in for url
       else:
-        output_dict[i] = '-'
+        output_dict[i] = 'NONE'
   
   # Grab output for output files
   #for url in url_list:
