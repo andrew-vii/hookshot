@@ -6,5 +6,5 @@ A tool for automating web scraping of emails from a URL and checking accounts ag
 ### Run
 To run, execute 
 ```bash
-python hookshot.py <API keyfile> <URL or URL file>
+python hookshot.py <API keyfile> <URL or URL file> <Spidering Depth> <Output File>
 ```
