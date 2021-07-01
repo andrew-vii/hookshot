@@ -136,7 +136,7 @@ def webscraper(URL, depth):
 
     # Run subprocess under our dict
     # Using ulimit and nice to control CPU usage and process timeout
-    process_dict[i] = subprocess.Popen("ulimit -t 1800; nice -n 15 " + scrape_command, stdout=subprocess.PIPE, shell=True)
+    process_dict[i] = subprocess.Popen("ulimit -t 324000; nice -n 15 " + scrape_command, stdout=subprocess.PIPE, shell=True)
 
     # Optional - run scrapes in series using wait()
     #process_dict[i].wait()
