@@ -9,6 +9,7 @@ import subprocess
 import datetime
 import argparse
 import re
+import random
 
 
 # Check our input (single URL or file) 
