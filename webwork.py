@@ -103,12 +103,12 @@ def webscraper(URL, depth):
     print("\nScraping " + i + "...")
 
     # Set up our output file
-    basename = os.path.basename(i)
-    output_file = "account_files/" + basename + "_emails.txt"
-    print("Output File: " + output_file)
-    newfile = open(output_file, "w+")
+    #basename = os.path.basename(i)
+    #output_file = "account_files/" + basename + "_emails.txt"
+    #print("Output File: " + output_file)
+    #newfile = open(output_file, "w+")
     time.sleep(1)
-    newfile.close()
+    #newfile.close()
 
     # Set up request parameters
     url_new = i + "/"
@@ -126,7 +126,7 @@ def webscraper(URL, depth):
     ]
 
     # Grab a random UAS from our list
-    uas = random.sample(uas_list, 1)
+    uas = random.choice(uas_list)
 
     # Use single UAS without randomly changing -- this one works pretty well on most sites
     #uas = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246'
@@ -137,7 +137,7 @@ def webscraper(URL, depth):
 
     # Run subprocess under our dict
     # Using ulimit and nice to control CPU usage and process timeout
-    process_dict[i] = subprocess.Popen("ulimit -t 324000; nice -n 15 " + scrape_command, stdout=subprocess.PIPE, shell=True)
+    process_dict[i] = subprocess.Popen("ulimit -t 324000; nice -n 15 " + str(scrape_command), stdout=subprocess.PIPE, shell=True)
 
     # Optional - run scrapes in series using wait()
     #process_dict[i].wait()
