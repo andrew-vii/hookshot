@@ -185,12 +185,12 @@ def webscraper(URL, depth):
     
     # Run regex against output, strip out only emails that match formatting
     regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
-      if regexp.search(str(subproc_return)):
-        output_dict[i] = regexp.findall(str(subproc_return))
+    if regexp.search(str(subproc_return)):
+      output_dict[i] = regexp.findall(str(subproc_return))
   
     # If no match, throw a placeholder in for url
-      else:
-        output_dict[i] = 'NONE'
+    else:
+      output_dict[i] = 'NONE'
   
   # Grab output for output files
   #for url in url_list:
