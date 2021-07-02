@@ -183,12 +183,14 @@ def webscraper(URL, depth):
     
     # Get output from subprocess
     subproc_return = process.stdout.read()
+    print(subproc_return)
     
     # Run regex against output, strip out only emails that match formatting
     regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
     if regexp.search(str(subproc_return)):
-      output_dict[i] = regexp.findall(str(subproc_return))
-  
+      output_dict[i] = str(regexp.findall(str(subproc_return)),'utf-8')
+      print(output_dict[i])
+
     # If no match, throw a placeholder in for url
     else:
       output_dict[i] = 'NONE'
