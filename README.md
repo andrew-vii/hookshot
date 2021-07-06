@@ -6,5 +6,5 @@ A tool for automating web scraping of emails from a URL using Cewl and checking 
 ### Run
 To run, execute 
 ```bash
-python hookshot.py <API keyfile> <URL or URL file> <Spidering Depth> <Output File>
+python main.py <API keyfile> <URL or URL file> <Spidering Depth> <Output File>
 ```
