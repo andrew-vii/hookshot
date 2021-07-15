@@ -102,13 +102,7 @@ def webscraper(URL, depth):
     i = url.strip()
     print("\nScraping " + i + "...")
 
-    # Set up our output file
-    #basename = os.path.basename(i)
-    #output_file = "account_files/" + basename + "_emails.txt"
-    #print("Output File: " + output_file)
-    #newfile = open(output_file, "w+")
     time.sleep(1)
-    #newfile.close()
 
     # Set up request parameters
     url_new = i + "/"
@@ -138,13 +132,10 @@ def webscraper(URL, depth):
     # Run subprocess under our dict
     # Using ulimit and nice to control CPU usage and process timeout
     process_dict[i] = subprocess.Popen("ulimit -t 324000; " + str(scrape_command), stdout=subprocess.PIPE, shell=True)
-    # Taking out nice -n 15
+    # Optional -- add 'nice -n 15' for granular CPU usage control
 
     # Optional - run scrapes in series using wait()
     #process_dict[i].wait()
-    
-    # Debugging - check process status
-    #print("Process Poll: " + str(process_dict[i].poll()))
     time.sleep(1)
 
   # Set up loop and variables
@@ -158,17 +149,27 @@ def webscraper(URL, depth):
     for url in url_list:
       i = url.strip()
 
+      # If proc is still running, add to count of running scrapes
       if process_dict[i].poll() is None:
         proc_states[i] = 0
         running_scrapes += 1
 
+      # If the proc is done, clear it -- if it just finished, print status update
       else:
+
+        if proc_states[i] != 1:
+          print("Scrape on " + str(i) + " complete!")
+
+        # Update in process dict
         proc_states[i] = 1
 
     # If we're still waiting on scrapes, output how many and sleep for a minute
     if 0 in proc_states.values():
       proc_complete = 0
       print("Waiting on " + str(running_scrapes) + " scrape(s) to complete...")
+
+      # Adjust this wait time if you want more frequent status checking
+      # Default 10 sec
       time.sleep(10)
 
     else:
@@ -195,26 +196,5 @@ def webscraper(URL, depth):
     else:
       output_dict[i] = 'NONE'
   
-  # Grab output for output files
-  #for url in url_list:
-    
-    # Strip line and get the filename
-    #i = url.strip()
-    #basename = os.path.basename(i)
-    #output_file = "account_files/" + basename + "_emails.txt"
-      
-    # Add URL and accounts scraped to the nested dict
-    #with open(output_file) as f:
-
-      #line_curr = f.read().splitlines()
-
-      # Check for email formatting -- don't add if its a bad match
-      #regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
-      #if regexp.search(str(line_curr)):
-        #output_dict[i] = regexp.findall(str(line_curr))
-
-      # If no matching emails, throw a blank string in for accounts found
-      #else:
-        #output_dict[i] = '-'
 
   return output_dict
