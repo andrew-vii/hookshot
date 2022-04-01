@@ -60,7 +60,10 @@ def get_accounts():
 
 
 def submit_account_breaches(account, api_key_file):
-  
+
+  # Display-friendly account
+  display_account = "".join((account[0], re.sub(r'[^@]',r'*', account[1:])))
+
   # Set up payload with our HIBP API key and distinctive UAS
   req_headers = {'hibp-api-key': get_api_key(api_key_file),
              'user-agent': 'Hookshot'
@@ -70,14 +73,17 @@ def submit_account_breaches(account, api_key_file):
   breach_url = 'https://haveibeenpwned.com/api/v3/breachedaccount/' + account
 
   # Submit our GET request
-  print("Submitting breach request for account: " + account)
+  print("Submitting breach request for account: " + display_account)
   breaches_response = requests.get(breach_url, headers=req_headers)
   
   return breaches_response 
  
   
 def submit_account_pastes(account, api_key_file):
-  
+
+  # Display-friendly account name
+  display_account = "".join((account[0], re.sub(r'[^@]',r'*', account[1:])))
+
   # Set up payload with our HIBP API key and distinctive UAS
   req_headers = {'hibp-api-key': get_api_key(api_key_file),
              'user-agent': 'Hookshot'
@@ -87,7 +93,7 @@ def submit_account_pastes(account, api_key_file):
   paste_url = 'https://haveibeenpwned.com/api/v3/pasteaccount/' + account
   
   # Submit our GET request
-  print("Submitting paste request for account: " + account)
+  print("Submitting paste request for account: " + display_account)
   pastes_response = requests.get(paste_url, headers=req_headers)
   
   return pastes_response
@@ -96,6 +102,8 @@ def submit_account_pastes(account, api_key_file):
 def check_account_breaches(breach_response, account):
   
   r = breach_response
+
+  display_account = "".join((account[0], re.sub(r'[^@]',r'*', account[1:])))
   
   breach_info = {
     'num_breaches': 0,
@@ -104,11 +112,11 @@ def check_account_breaches(breach_response, account):
   
   # Checking for breaches 
   if r.status_code == 404:
-    print("%s not found in a breach." %account)
+    print("%s not found in a breach." %display_account)
     
   elif r.status_code == 200:
     data = r.json()
-    print('----:Breach Found for: %s' %account)
+    print('----:Breach Found for: %s' %display_account)
     num_breaches = len(data)
     breach_info['num_breaches'] = num_breaches
 
@@ -123,6 +131,8 @@ def check_account_breaches(breach_response, account):
 def check_account_pastes(paste_response, account):
   
   r = paste_response
+
+  display_account = "".join((account[0], re.sub(r'[^@]',r'*', account[1:])))
   
   paste_info = {
     'num_pastes': 0,
@@ -131,11 +141,11 @@ def check_account_pastes(paste_response, account):
   
   # Checking for pastes 
   if r.status_code == 404:
-    print("%s not found in a paste." %account)
+    print("%s not found in a paste." %display_account)
     
   elif r.status_code == 200:
     data = r.json()
-    print('----:Paste Found for: %s' %account)
+    print('----:Paste Found for: %s' %display_account)
     num_pastes = len(data)
     paste_info['num_pastes'] = num_pastes
 
