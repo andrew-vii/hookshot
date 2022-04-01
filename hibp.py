@@ -1,12 +1,8 @@
 # HIBP API Integration
 
 import os
-import sys
 import requests
-import json
 import time
-import datetime
-import argparse
 import re
 
 
