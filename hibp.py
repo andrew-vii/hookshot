@@ -150,7 +150,7 @@ def check_account_pastes(paste_response, account):
     paste_info['num_pastes'] = num_pastes
 
   else:
-    #data = r.json()
+    data = r.json()
     print('Error: <%s>  %s'%(str(r.status_code),data['message']))
     exit()
 
