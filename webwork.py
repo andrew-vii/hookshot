@@ -195,6 +195,5 @@ def webscraper(URL, depth):
     # If no match, throw a placeholder in for url
     else:
       output_dict[i] = 'NONE'
-  
 
   return output_dict
