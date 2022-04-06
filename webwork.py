@@ -51,7 +51,7 @@ def check_URL(URL, input_type):
       url_dict = { url.strip() : 0 for url in url_list }
     for c in url_list:
       i = c.strip()
-      time.sleep(0.5)
+      time.sleep(1)
       print("\nChecking " + i.strip() + "...")
 
       # Clean up the url

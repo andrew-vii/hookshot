@@ -24,7 +24,7 @@ def main(argv):
     args = parser.parse_args()
 
     # Run URL scraper
-    account_dict = webwork.webscraper(args.URL, args.depth, 30)
+    account_dict = webwork.webscraper(args.URL, args.depth, 300)
 
     # Run HIBP routine
     main_dict, blank_list = hibp.hibp_checker(args.hibp_keyfile, account_dict)
