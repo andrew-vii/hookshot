@@ -34,7 +34,7 @@ def check_URL(URL, input_type):
     time.sleep(1)
     print("Checking Single URL (" + URL + ")...")
     url_dict[URL] = 0
-    check_response = requests.get(URL + "/")
+    check_response = requests.get(URL + "/", verify=False)
 
     # Check our reponse and output the code we get for the URL
     if check_response.status_code == 200 or check_response.status_code == 403 or check_response.status_code == 406:
@@ -58,7 +58,7 @@ def check_URL(URL, input_type):
       check_url = i.strip()
 
       # Send our GET request with a Windows Firefox UAS (fixes a 406 error)
-      check_response = requests.get(check_url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246"})
+      check_response = requests.get(check_url, verify=False, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246"})
 
       if check_response.status_code == 200 or check_response.status_code == 403 or check_response.status_code == 406:
         print("Received Code " + str(check_response.status_code) + " -- Reachable!")
