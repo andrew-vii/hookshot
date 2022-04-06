@@ -58,7 +58,7 @@ def get_accounts():
 def submit_account_breaches(account, api_key_file):
 
   # Display-friendly account
-  display_account = "".join((account[0], re.sub(r'[^@]',r'*', account[1:])))
+  display_account = ("".join((account[:2], re.sub(r'[^@]',r'*', account[1:(account.find('@'))])))) + account[(account.find('@')):]
 
   # Set up payload with our HIBP API key and distinctive UAS
   req_headers = {'hibp-api-key': get_api_key(api_key_file),
@@ -78,7 +78,7 @@ def submit_account_breaches(account, api_key_file):
 def submit_account_pastes(account, api_key_file):
 
   # Display-friendly account name
-  display_account = "".join((account[0], re.sub(r'[^@]',r'*', account[1:])))
+  display_account = ("".join((account[:2], re.sub(r'[^@]',r'*', account[1:(account.find('@'))])))) + account[(account.find('@')):]
 
   # Set up payload with our HIBP API key and distinctive UAS
   req_headers = {'hibp-api-key': get_api_key(api_key_file),
@@ -99,8 +99,8 @@ def check_account_breaches(breach_response, account):
   
   r = breach_response
 
-  display_account = "".join((account[0], re.sub(r'[^@]',r'*', account[1:])))
-  
+  display_account = ("".join((account[:2], re.sub(r'[^@]',r'*', account[1:(account.find('@'))])))) + account[(account.find('@')):]
+
   breach_info = {
     'num_breaches': 0,
     'breaches': []
@@ -128,7 +128,7 @@ def check_account_pastes(paste_response, account):
   
   r = paste_response
 
-  display_account = "".join((account[0], re.sub(r'[^@]',r'*', account[1:])))
+  display_account = ("".join((account[:2], re.sub(r'[^@]',r'*', account[1:(account.find('@'))])))) + account[(account.find('@')):]
   
   paste_info = {
     'num_pastes': 0,
