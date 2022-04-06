@@ -155,8 +155,9 @@ def check_account_pastes(paste_response, account):
 
 def hibp_checker(keyfile, account_dict):
 
-  # Create nested dictionary
+  # Create nested dictionary and blank list
   output_dict = {}
+  blank_urls = []
   
   # Get accounts - not needed after adding the nested dict output to the webscraper
   #account_dict = get_accounts()
@@ -164,41 +165,47 @@ def hibp_checker(keyfile, account_dict):
   # Submit each account for pastes and breaches
   for url, accounts in account_dict.items():
 
+
      # Set up logfile
     logfile = "hibp_output.log"
     output_file = open(logfile,"a+")
-    
-    # Create nested dict as key
-    for account in accounts:
 
-      # Double-check on email formatting
-      regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
-      if regexp.search(str(account)):
-        match_account = regexp.search(str(account)).group(0)
+    # If there's output for the URL, submit and log
+    if accounts:
+      # Create nested dict as key
+      for account in accounts:
 
-        # Add to nested dict
-        output_dict[account] = {}
-      
-        # Submit account for breaches and check
-        time.sleep(1)
-        breach_result = submit_account_breaches(match_account, keyfile)
-        breach_info = check_account_breaches(breach_result, match_account)
+        # Double-check on email formatting
+        regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
+        if regexp.search(str(account)):
+          match_account = regexp.search(str(account)).group(0)
 
-        # Submit account for pastes and check
-        time.sleep(2)
-        paste_result = submit_account_pastes(match_account, keyfile)
-        paste_info = check_account_pastes(paste_result, match_account)
-        time.sleep(1)
+          # Add to nested dict
+          output_dict[account] = {}
 
-        # Output breach and paste info to nested dict
-        output_dict[account]['URL'] = url.strip()
-        output_dict[account]['Breach_Count'] = breach_info['num_breaches']
-        output_dict[account]['Breach_Detail'] = breach_info['breaches']
-        output_dict[account]['Paste_Count'] = paste_info['num_pastes']
-        output_dict[account]['Paste_Info'] = paste_info['pastes']
-      
+          # Submit account for breaches and check
+          time.sleep(1)
+          breach_result = submit_account_breaches(match_account, keyfile)
+          breach_info = check_account_breaches(breach_result, match_account)
+
+          # Submit account for pastes and check
+          time.sleep(2)
+          paste_result = submit_account_pastes(match_account, keyfile)
+          paste_info = check_account_pastes(paste_result, match_account)
+          time.sleep(1)
+
+          # Output breach and paste info to nested dict
+          output_dict[account]['URL'] = url.strip()
+          output_dict[account]['Breach_Count'] = breach_info['num_breaches']
+          output_dict[account]['Breach_Detail'] = breach_info['breaches']
+          output_dict[account]['Paste_Count'] = paste_info['num_pastes']
+          output_dict[account]['Paste_Info'] = paste_info['pastes']
+
+    # Else, if the url didn't have any accounts, add URL to blank list
+    blank_urls.append(url)
+
     # Close output file
     output_file.close()
-  return output_dict
+  return output_dict,blank_urls
 
 

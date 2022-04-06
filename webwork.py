@@ -1,6 +1,7 @@
 # Email Webscraper
 
 import os
+import signal
 import sys
 import requests
 import json
@@ -79,7 +80,7 @@ def check_URL(URL, input_type):
   
   return url_dict
 
-def webscraper(URL, depth):
+def webscraper(URL, depth, timeout):
 
   # Set up our list and dict
   output_dict = {}
@@ -130,18 +131,25 @@ def webscraper(URL, depth):
     scrape_command = "cewl " + str(url_new) + " --ua '" + str(uas) + "' -n -d " + str(depth) + " -e " #--email_file " + str(output_file)
 
     # Run subprocess under our dict
-    # Using ulimit and nice to control CPU usage and process timeout
-    process_dict[i] = subprocess.Popen("ulimit -t 324000; " + str(scrape_command), stdout=subprocess.PIPE, shell=True)
+    # Using ulimit and nice to control CPU usage and process timeout, default: ulimit -t 32400
+    #process_dict[i] = subprocess.Popen("ulimit -t " + str(timeout) + "; " + str(scrape_command), stdout=subprocess.PIPE, shell=True)
+    process_dict[i] = subprocess.Popen(str(scrape_command), stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
     # Optional -- add 'nice -n 15' for granular CPU usage control
 
     # Optional - run scrapes in series using wait()
     #process_dict[i].wait()
     time.sleep(1)
 
+  # Adjust this wait time if you want more frequent status checking
+  # Default 10 sec
+  check_time = 10
+
   # Set up loop and variables
   proc_states = {}
   proc_complete = 0
-  while proc_complete == 0:
+
+  #Run loop until we need to timeout our subprocesses
+  while proc_complete <= (timeout / check_time ):
 
     # Reset scrape count
     running_scrapes = 0
@@ -165,24 +173,33 @@ def webscraper(URL, depth):
 
     # If we're still waiting on scrapes, output how many and sleep for a minute
     if 0 in proc_states.values():
-      proc_complete = 0
+      proc_complete += 1
       print("Waiting on " + str(running_scrapes) + " scrape(s) to complete...")
-
-      # Adjust this wait time if you want more frequent status checking
-      # Default 10 sec
-      time.sleep(10)
+      time.sleep(check_time)
 
     else:
-      proc_complete = 1
+      proc_complete = (timeout / check_time )
       print("\nAll Scrapes Complete!\n")
 
+  # Kill all of our subprocesses that are still running
+  for url in url_list:
+
+    # Check URL formatting
+    i = url.strip()
+
+    # Send sigterm to subprocess
+    if proc_states[i] == 0:
+      print("Killing timed-out scrape on " + str(i) )
+      os.killpg(os.getpgid(process_dict[i].pid), signal.SIGTERM)
+
+  # Set up output dictionary
   output_dict = {}
   
   # Grab output from subprocess module
   for url, process in process_dict.items():
     
     i = url.strip()
-    
+
     # Get output from subprocess
     subproc_return = process.stdout.read()
     subproc_return = subproc_return.decode("utf-8")
@@ -193,7 +210,7 @@ def webscraper(URL, depth):
       output_dict[i] = regexp.findall(str(subproc_return))
 
     # If no match, throw a placeholder in for url
-    else:
-      output_dict[i] = 'NONE'
+    if len(subproc_return) <= 75:
+      output_dict[i] = ''
 
   return output_dict

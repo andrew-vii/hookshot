@@ -79,7 +79,7 @@ def report(analysis_dict, output_file):
   return
     
 
-def analyze(results_dict):
+def analyze(results_dict, blank_list):
   
   # Make our main nested dict structure
   analysis_dict = {}
@@ -95,6 +95,13 @@ def analyze(results_dict):
     analysis_dict[info['URL']]['Total_Accounts'] = 0
     analysis_dict[info['URL']]['Private_Accounts'] = 0
 
+  # Then do the same for the blank URLs
+  for url in blank_list:
+    analysis_dict[url] = {}
+    analysis_dict[url]['Breached_Accounts'] = 0
+    analysis_dict[url]['Pasted_Accounts'] = 0
+    analysis_dict[url]['Total_Accounts'] = 0
+    analysis_dict[url]['Private_Accounts'] = 0
   
   # Go through our main dictionary
   for account, info in results_dict.items():

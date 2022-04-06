@@ -24,13 +24,13 @@ def main(argv):
     args = parser.parse_args()
 
     # Run URL scraper
-    account_dict = webwork.webscraper(args.URL, args.depth)
+    account_dict = webwork.webscraper(args.URL, args.depth, 30)
 
     # Run HIBP routine
-    main_dict = hibp.hibp_checker(args.hibp_keyfile, account_dict)
+    main_dict, blank_list = hibp.hibp_checker(args.hibp_keyfile, account_dict)
 
     # Run analysis
-    analysis_dict = reporter.analyze(main_dict)
+    analysis_dict = reporter.analyze(main_dict,blank_list)
         
     # Produce report
     reporter.report(analysis_dict, args.output_file)
