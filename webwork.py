@@ -11,6 +11,9 @@ import datetime
 import argparse
 import re
 import random
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 
 
 # Check our input (single URL or file) 
@@ -34,7 +37,13 @@ def check_URL(URL, input_type):
     time.sleep(1)
     print("Checking Single URL (" + URL + ")...")
     url_dict[URL] = 0
-    check_response = requests.get(URL + "/", verify=False)
+
+    # Send our GET request with a Windows Firefox UAS (fixes a 406 error)
+    try:
+      check_response = requests.get(check_url, verify=False, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246"})
+    except requests.exceptions.RequestException as e:
+      print("Encountered unknown error manually checking URL.")
+      print("Will attempt to request via cewl, but you may want to double-check your connection to " + str(check_url) + "...")
 
     # Check our reponse and output the code we get for the URL
     if check_response.status_code == 200 or check_response.status_code == 403 or check_response.status_code == 406:
@@ -58,7 +67,11 @@ def check_URL(URL, input_type):
       check_url = i.strip()
 
       # Send our GET request with a Windows Firefox UAS (fixes a 406 error)
-      check_response = requests.get(check_url, verify=False, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246"})
+      try:
+        check_response = requests.get(check_url, verify=False, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246"})
+      except requests.exceptions.RequestException as e:
+        print("Encountered unknown error manually checking URL.")
+        print("Will attempt to request via cewl, but you may want to double-check your connection to " + str(check_url) + "...")
 
       if check_response.status_code == 200 or check_response.status_code == 403 or check_response.status_code == 406:
         print("Received Code " + str(check_response.status_code) + " -- Reachable!")
@@ -164,12 +177,12 @@ def webscraper(URL, depth, timeout):
 
       # If the proc is done, clear it -- if it just finished, print status update
       else:
-
-        if proc_states[i] != 1:
-          print("Scrape on " + str(i) + " complete!")
-
         # Update in process dict
         proc_states[i] = 1
+        #if proc_states[i] == 1:
+        print("Scrape on " + str(i) + " complete!")
+
+
 
     # If we're still waiting on scrapes, output how many and sleep for a minute
     if 0 in proc_states.values():
