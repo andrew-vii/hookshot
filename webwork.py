@@ -172,7 +172,7 @@ def webscraper(URL, depth, timeout):
   blank_list =[]
 
   #Run loop until we need to timeout our subprocesses
-  while proc_complete <= (int(timeout) / check_time ):
+  while proc_complete < (int(timeout) / check_time ):
 
     # Reset scrape count
     running_scrapes = 0
