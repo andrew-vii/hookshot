@@ -177,11 +177,11 @@ def webscraper(URL, depth, timeout):
 
       # If the proc is done, clear it -- if it just finished, print status update
       else:
+
+        if proc_states[i] == 0:
+          print("Scrape on " + str(i) + " complete!")
         # Update in process dict
         proc_states[i] = 1
-        #if proc_states[i] == 1:
-        print("Scrape on " + str(i) + " complete!")
-
 
 
     # If we're still waiting on scrapes, output how many and sleep for a minute
