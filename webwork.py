@@ -40,6 +40,7 @@ def check_URL(URL, input_type):
     time.sleep(1)
     print("Checking Single URL (" + URL + ")...")
     url_dict[URL] = 0
+    check_url = URL.strip()
 
     # Send our GET request with a Windows Firefox UAS (fixes a 406 error)
     try:
@@ -170,7 +171,7 @@ def webscraper(URL, depth, timeout):
   proc_complete = 0
 
   #Run loop until we need to timeout our subprocesses
-  while proc_complete <= (timeout / check_time ):
+  while proc_complete <= (int(timeout) / check_time ):
 
     # Reset scrape count
     running_scrapes = 0
