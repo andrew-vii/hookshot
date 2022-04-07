@@ -34,7 +34,10 @@ def main(argv):
     deep_dict = {}
     fail_list = []
     # Check if we have blank/missing URLs
-    if len(blank_list) <= 0:
+    #DEBUGGING
+    print("BLANK LIST:")
+    print(blank_list)
+    if len(blank_list) > 0:
         # Re-scrape the URLs with more depth and more time for command to complete 
         account_dict = webwork.webscraper(blank_list, (int(args.depth) + 1), (int(args.timeout) * 10))
         # Send the new accounts against HIBP

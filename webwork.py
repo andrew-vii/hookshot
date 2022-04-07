@@ -18,15 +18,15 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Check our input (single URL or file) 
 def check_input(url):
-  if os.path.isfile(url):
+  if type(url) == list:
+    print("Loaded - Blank URL List Mode\n")
+    input_type = 3
+  elif os.path.isfile(url):
     print("Loaded - URL List Mode\n")
     input_type = 2
   elif "http" or "www" or "://" in url:
     print("Loaded - Single URL Mode\n")
     input_type = 1
-  elif url:
-    print("Loaded - Blank URL List Mode\n")
-    input_type = 3  
   else:
     print("URL Input Error\n")
     input_type = 0
@@ -169,6 +169,7 @@ def webscraper(URL, depth, timeout):
   # Set up loop and variables
   proc_states = {}
   proc_complete = 0
+  blank_list =[]
 
   #Run loop until we need to timeout our subprocesses
   while proc_complete <= (int(timeout) / check_time ):
@@ -210,8 +211,9 @@ def webscraper(URL, depth, timeout):
 
     # Send sigterm to subprocess
     if proc_states[i] == 0:
-      print("Killing timed-out scrape on " + str(i) )
+      print("Killing timed-out scrape on " + str(i) + "\n")
       os.killpg(os.getpgid(process_dict[i].pid), signal.SIGTERM)
+      blank_list.append(i)
 
   # Set up output dictionary
   output_dict = {}
@@ -234,4 +236,4 @@ def webscraper(URL, depth, timeout):
     if len(subproc_return) <= 75:
       output_dict[i] = ''
 
-  return output_dict
+  return output_dict #, blank_list

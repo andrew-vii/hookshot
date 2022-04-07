@@ -165,13 +165,12 @@ def hibp_checker(keyfile, account_dict):
   # Submit each account for pastes and breaches
   for url, accounts in account_dict.items():
 
-
      # Set up logfile
     logfile = "hibp_output.log"
     output_file = open(logfile,"a+")
 
     # If there's output for the URL, submit and log
-    if accounts:
+    if len(accounts) > 1:
       # Create nested dict as key
       for account in accounts:
 
@@ -202,10 +201,12 @@ def hibp_checker(keyfile, account_dict):
           output_dict[account]['Paste_Info'] = paste_info['pastes']
 
     # Else, if the url didn't have any accounts, add URL to blank list
-    blank_urls.append(url)
+    else:
+      blank_urls.append(url)
 
     # Close output file
     output_file.close()
+
   return output_dict,blank_urls
 
 
