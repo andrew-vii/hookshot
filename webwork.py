@@ -24,6 +24,9 @@ def check_input(url):
   elif "http" or "www" or "://" in url:
     print("Loaded - Single URL Mode\n")
     input_type = 1
+  elif url:
+    print("Loaded - Blank URL List Mode\n")
+    input_type = 3  
   else:
     print("URL Input Error\n")
     input_type = 0
@@ -87,7 +90,12 @@ def check_URL(URL, input_type):
       print("\nAll " + str(len(url_list)) + " URLs Reachable!\n")
       time.sleep(1)
       status = 1
-      
+  
+  elif input_type == 3:
+    print("Re-loading blank URLs..")
+    url_dict = { url.strip() : 0 for url in URL }
+    status = 1
+  
   else:
     print("Unable to load URL(s) to check")
   
