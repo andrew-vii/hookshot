@@ -188,6 +188,7 @@ def hibp_checker(keyfile, account_dict):
 
           # Double-check on email formatting
           regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
+
           if regexp.search(str(account)):
             match_account = regexp.search(str(account)).group(0)
 
@@ -213,7 +214,8 @@ def hibp_checker(keyfile, account_dict):
             output_dict[account]['Paste_Info'] = paste_info['pastes']
 
             # Output info to the breachfile for that account
-            h.write(account + "\n")
+            if breach_info['num_breaches'] >= 1:
+              h.write(account + "\n")
 
     # Else, if the url didn't have any accounts, add URL to blank list
     else:
