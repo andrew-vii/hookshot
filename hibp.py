@@ -112,7 +112,7 @@ def check_account_breaches(breach_response, account):
     
   elif r.status_code == 200:
     data = r.json()
-    print('----:Breach Found for: %s' %display_account)
+    print('----:New Breach Found for: %s' %display_account)
     num_breaches = len(data)
     breach_info['num_breaches'] = num_breaches
 
@@ -141,7 +141,7 @@ def check_account_pastes(paste_response, account):
     
   elif r.status_code == 200:
     data = r.json()
-    print('----:Paste Found for: %s' %display_account)
+    print('----:New Paste Found for: %s' %display_account)
     num_pastes = len(data)
     paste_info['num_pastes'] = num_pastes
 
@@ -161,44 +161,59 @@ def hibp_checker(keyfile, account_dict):
   
   # Get accounts - not needed after adding the nested dict output to the webscraper
   #account_dict = get_accounts()
-  
+
+  # Set up filepath
+  path = 'output_files/'
+
   # Submit each account for pastes and breaches
   for url, accounts in account_dict.items():
 
-     # Set up logfile
+    # Set up logfile
     logfile = "hibp_output.log"
     output_file = open(logfile,"a+")
+
+    # Set up breached accounts file for each URL
+    regurl = re.sub(r'http[s]*\:\/*', '', url.strip())
+    regurl = re.sub(r'\.[\w]*\/*', '', regurl)
+    breachfile = "output_files/" + regurl + "_breached.txt"
+    h = open(breachfile, "a+")
 
     # If there's output for the URL, submit and log
     if len(accounts) > 1:
       # Create nested dict as key
       for account in accounts:
 
-        # Double-check on email formatting
-        regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
-        if regexp.search(str(account)):
-          match_account = regexp.search(str(account)).group(0)
+        # Check if we already have a breach result for this account
+        if account not in h.read():
 
-          # Add to nested dict
-          output_dict[account] = {}
+          # Double-check on email formatting
+          regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
+          if regexp.search(str(account)):
+            match_account = regexp.search(str(account)).group(0)
 
-          # Submit account for breaches and check
-          time.sleep(1)
-          breach_result = submit_account_breaches(match_account, keyfile)
-          breach_info = check_account_breaches(breach_result, match_account)
+            # Add to nested dict
+            output_dict[account] = {}
 
-          # Submit account for pastes and check
-          time.sleep(2)
-          paste_result = submit_account_pastes(match_account, keyfile)
-          paste_info = check_account_pastes(paste_result, match_account)
-          time.sleep(1)
+            # Submit account for breaches and check
+            time.sleep(1)
+            breach_result = submit_account_breaches(match_account, keyfile)
+            breach_info = check_account_breaches(breach_result, match_account)
 
-          # Output breach and paste info to nested dict
-          output_dict[account]['URL'] = url.strip()
-          output_dict[account]['Breach_Count'] = breach_info['num_breaches']
-          output_dict[account]['Breach_Detail'] = breach_info['breaches']
-          output_dict[account]['Paste_Count'] = paste_info['num_pastes']
-          output_dict[account]['Paste_Info'] = paste_info['pastes']
+            # Submit account for pastes and check
+            time.sleep(2)
+            paste_result = submit_account_pastes(match_account, keyfile)
+            paste_info = check_account_pastes(paste_result, match_account)
+            time.sleep(1)
+
+            # Output breach and paste info to nested dict
+            output_dict[account]['URL'] = url.strip()
+            output_dict[account]['Breach_Count'] = breach_info['num_breaches']
+            output_dict[account]['Breach_Detail'] = breach_info['breaches']
+            output_dict[account]['Paste_Count'] = paste_info['num_pastes']
+            output_dict[account]['Paste_Info'] = paste_info['pastes']
+
+            # Output info to the breachfile for that account
+            h.write(account)
 
     # Else, if the url didn't have any accounts, add URL to blank list
     else:

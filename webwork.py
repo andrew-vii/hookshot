@@ -15,7 +15,6 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-
 # Check our input (single URL or file) 
 def check_input(url):
   if type(url) == list:
@@ -107,16 +106,21 @@ def webscraper(URL, depth, timeout):
   # Set up our list and dict
   output_dict = {}
   url_list = []
-  
+
   # Check whether we received a single URL or a list
   input_type = check_input(URL)
-  
-  # Check all our URLs to make sure we can reach them 
+
+  # Check all our URLs to make sure we can reach them
   url_dict = check_URL(URL, input_type)
   url_list = url_dict.keys()
 
   # Set up process dict
   process_dict = {}
+
+  # Set up output directory
+  path = 'output_files'
+  if not os.path.exists(path):
+    os.makedirs(path)
 
   # Run scrapes on target URLs
   for url in url_list:
@@ -125,6 +129,13 @@ def webscraper(URL, depth, timeout):
     i = url.strip()
     print("\nScraping " + i + "...")
 
+    # Create a file for each URL to use for output
+    regurl = re.sub(r'http[s]*\:\/*', '', url.strip())
+    regurl = re.sub(r'\.[\w]*\/*', '', regurl)
+    f = open(path + "/" + regurl + "_accounts.txt", "a+")
+    f.close()
+
+    # Pacing for setting up all the scrapers
     time.sleep(1)
 
     # Set up request parameters
@@ -214,10 +225,10 @@ def webscraper(URL, depth, timeout):
 
   # Set up output dictionary
   output_dict = {}
-  
+
   # Grab output from subprocess module
   for url, process in process_dict.items():
-    
+
     i = url.strip()
 
     # Get output from subprocess
@@ -233,4 +244,16 @@ def webscraper(URL, depth, timeout):
     if len(subproc_return) <= 75:
       output_dict[i] = ''
 
-  return output_dict #, blank_list
+  # Manage our output files
+  for url, accounts in output_dict.items():
+    regurl = re.sub(r'http[s]*\:\/*','',url.strip())
+    regurl = re.sub(r'\.[\w]*\/*','',regurl)
+    g = open(path + "/" + regurl + "_accounts.txt", "a+")
+    for account in accounts:
+      if account not in g.read():
+        g.write(account)
+
+    g.close()
+
+
+  return output_dict
