@@ -183,9 +183,16 @@ def hibp_checker(keyfile, account_dict):
       # Create nested dict as key
       for account in accounts:
 
-        # Check if we already have a breach result for this account
-        if account not in h.read():
+        display_account = ("".join((account[:2], re.sub(r'[^@]',r'*', account[1:(account.find('@'))])))) + account[(account.find('@')):]
 
+        # Check if we already have a breach result for this account
+        if str(account) in open(breachfile).read():
+          print("Found previous breach for " + display_account)
+          output_dict[account] = {}
+          output_dict[account]['URL'] = url.strip()
+          output_dict[account]['Breach_Count'] = 1
+          output_dict[account]['Paste_Count'] = 0
+        else:
           # Double-check on email formatting
           regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
 
