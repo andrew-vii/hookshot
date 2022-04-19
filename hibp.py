@@ -173,7 +173,7 @@ def hibp_checker(keyfile, account_dict):
     output_file = open(logfile,"a+")
 
     # Set up breached accounts file for each URL
-    regurl = re.sub(r'http[s]*\:\/*', '', url.strip())
+    regurl = re.sub(r'http[s]*\:\/*(www.)*', '', url.strip())
     regurl = re.sub(r'\.[\w]*\/*', '', regurl)
     breachfile = "output_files/" + regurl + "_breached.txt"
     h = open(breachfile, "a+")
@@ -213,7 +213,7 @@ def hibp_checker(keyfile, account_dict):
             output_dict[account]['Paste_Info'] = paste_info['pastes']
 
             # Output info to the breachfile for that account
-            h.write(account)
+            h.write(account + "\n")
 
     # Else, if the url didn't have any accounts, add URL to blank list
     else:

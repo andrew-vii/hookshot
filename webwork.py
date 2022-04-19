@@ -130,7 +130,7 @@ def webscraper(URL, depth, timeout):
     print("\nScraping " + i + "...")
 
     # Create a file for each URL to use for output
-    regurl = re.sub(r'http[s]*\:\/*', '', url.strip())
+    regurl = re.sub(r'http[s]*\:\/*(www.)*', '', url.strip())
     regurl = re.sub(r'\.[\w]*\/*', '', regurl)
     f = open(path + "/" + regurl + "_accounts.txt", "a+")
     f.close()
@@ -246,12 +246,12 @@ def webscraper(URL, depth, timeout):
 
   # Manage our output files
   for url, accounts in output_dict.items():
-    regurl = re.sub(r'http[s]*\:\/*','',url.strip())
+    regurl = re.sub(r'http[s]*\:\/*(www.)*','',url.strip())
     regurl = re.sub(r'\.[\w]*\/*','',regurl)
     g = open(path + "/" + regurl + "_accounts.txt", "a+")
     for account in accounts:
       if account not in g.read():
-        g.write(account)
+        g.write(account + "\n")
 
     g.close()
 
