@@ -208,7 +208,7 @@ def webscraper(URL, depth, timeout):
       time.sleep(check_time)
 
     else:
-      proc_complete = (timeout / check_time )
+      proc_complete = (int(timeout) / check_time )
       print("\nAll Scrapes Complete!\n")
 
   # Kill all of our subprocesses that are still running
