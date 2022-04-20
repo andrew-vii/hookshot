@@ -159,7 +159,7 @@ def webscraper(URL, depth, timeout):
 
     # Run our scrapes in parallel -- best results with depth at 2 (faster) or 3 (longer, but more thorough)
     # Set up scrape command
-    scrape_command = "cewl " + str(url_new) + " --ua '" + str(uas) + "' -n -d " + str(depth) + " -e " #--email_file " + str(output_file)
+    scrape_command = "cewl " + str(url_new) + " --ua '" + str(uas) + "' -n --lowercase -d " + str(depth) + " -e " #--email_file " + str(output_file)
 
     # Run subprocess under our dict
     # Using ulimit and nice to control CPU usage and process timeout, default: ulimit -t 32400
