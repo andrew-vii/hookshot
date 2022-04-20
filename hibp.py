@@ -112,7 +112,7 @@ def check_account_breaches(breach_response, account):
     
   elif r.status_code == 200:
     data = r.json()
-    print('----:New Breach Found for: %s' %display_account)
+    print('-------:New Breach Found for: %s' %display_account)
     num_breaches = len(data)
     breach_info['num_breaches'] = num_breaches
 
@@ -141,7 +141,7 @@ def check_account_pastes(paste_response, account):
     
   elif r.status_code == 200:
     data = r.json()
-    print('----:New Paste Found for: %s' %display_account)
+    print('-------:New Paste Found for: %s' %display_account)
     num_pastes = len(data)
     paste_info['num_pastes'] = num_pastes
 
@@ -176,6 +176,7 @@ def hibp_checker(keyfile, account_dict):
     regurl = re.sub(r'http[s]*\:\/*(www.)*', '', url.strip())
     regurl = re.sub(r'\.[\w]*\/*', '', regurl)
     breachfile = "output_files/" + regurl + "_breached.txt"
+    accountfile = "output_files/" + regurl + "_accounts.txt"
     h = open(breachfile, "a+")
 
     # If there's output for the URL, submit and log
@@ -192,6 +193,16 @@ def hibp_checker(keyfile, account_dict):
           output_dict[account]['URL'] = url.strip()
           output_dict[account]['Breach_Count'] = 1
           output_dict[account]['Paste_Count'] = 0
+
+        # Future work area - check if we've already checked for a breach on this account
+        elif str(account) in open(accountfile).read():
+          print("Previously checked " + display_account + " -- no breaches found.")
+          output_dict[account] = {}
+          output_dict[account]['URL'] = url.strip()
+          output_dict[account]['Breach_Count'] = 0
+          output_dict[account]['Paste_Count'] = 0
+
+        # Else, the account is new and has not been previously checked for a breach, send it
         else:
           # Double-check on email formatting
           regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
