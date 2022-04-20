@@ -15,7 +15,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Check our input (single URL or file) 
 def check_input(url):
-  os.system('cls')
+  os.system('clear')
   if type(url) == list:
     print("Loaded - Blank URL List Mode\n")
     input_type = 3

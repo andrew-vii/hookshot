@@ -195,7 +195,7 @@ def hibp_checker(keyfile, account_dict):
           output_dict[account]['Paste_Count'] = 0
 
         # Future work area - check if we've already checked for a breach on this account
-        elif str(account) in open(accountfile).read():
+        elif ((str(account) in open(accountfile).read()) and (str(account) not in open(breachfile).read())):
           print("Previously checked " + display_account + " -- no breaches found.")
           output_dict[account] = {}
           output_dict[account]['URL'] = url.strip()
