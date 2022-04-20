@@ -1,15 +1,9 @@
 #!/usr/bin/python3
 
 # Main program control
-
-import time
-import datetime
 import os
 import sys
 import argparse
-import _thread
-import json
-import requests
 import hibp as hibp
 import webwork as webwork
 import reporter as reporter
@@ -23,6 +17,8 @@ def main(argv):
     parser.add_argument("output_file", type=str, help="Output File")
     parser.add_argument("timeout", type=str, help="Webscraper Timeout")
     args = parser.parse_args()
+
+    os.system('clear')
 
     # Run URL scraper
     account_dict = webwork.webscraper(args.URL, args.depth, args.timeout)
