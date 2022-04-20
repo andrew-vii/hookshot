@@ -251,10 +251,9 @@ def webscraper(URL, depth, timeout):
     regurl = re.sub(r'\.[\w]*\/*','',regurl)
     g = open(path + "/" + regurl + "_accounts.txt", "a+")
     for account in accounts:
-      if account not in g.read():
+      if str(account) not in open(g).read():
         g.write(account + "\n")
 
     g.close()
-
 
   return output_dict
