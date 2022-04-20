@@ -63,7 +63,7 @@ def check_URL(URL, input_type):
       url_dict = { url.strip() : 0 for url in url_list }
     for c in url_list:
       i = c.strip()
-      time.sleep(1)
+      time.sleep(0.5)
       print("\nChecking " + i.strip() + "...")
 
       # Clean up the url
@@ -234,6 +234,9 @@ def webscraper(URL, depth, timeout):
     # Get output from subprocess
     subproc_return = process.stdout.read()
     subproc_return = subproc_return.decode("utf-8")
+
+    # Remove the email that shows up every time in cewl
+    subproc_return = re.sub('robin@digi.nin','',subproc_return)
 
     # Run regex against output, strip out only emails that match formatting
     regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
