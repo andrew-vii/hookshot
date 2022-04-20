@@ -2,21 +2,20 @@
 
 import os
 import signal
-import sys
 import requests
-import json
 import time
 import subprocess
-import datetime
-import argparse
 import re
 import random
+import os
 import urllib3
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+# Disable URL certificate validation -- fixes a requests error, but use with caution
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Check our input (single URL or file) 
 def check_input(url):
+  os.system('cls')
   if type(url) == list:
     print("Loaded - Blank URL List Mode\n")
     input_type = 3
