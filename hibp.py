@@ -181,6 +181,12 @@ def hibp_checker(keyfile, account_dict):
 
     # If there's output for the URL, submit and log
     if len(accounts) > 1:
+
+      # Fix an error related to the first run for adding breaches into a blank list
+      first_run = 1
+      if (os.path.getsize(breachfile)) > 0:
+        first_run = 0
+
       # Create nested dict as key
       for account in accounts:
 
@@ -195,7 +201,7 @@ def hibp_checker(keyfile, account_dict):
           output_dict[account]['Paste_Count'] = 0
 
         # Future work area - check if we've already checked for a breach on this account
-        elif ((str(account) in open(accountfile).read()) and (str(account) not in open(breachfile).read())):
+        elif ((first_run == 0) and (str(account) in open(accountfile).read()) and (str(account) not in open(breachfile).read())):
           print("Previously checked " + display_account + " -- no breaches found.")
           output_dict[account] = {}
           output_dict[account]['URL'] = url.strip()
