@@ -253,7 +253,7 @@ def webscraper(URL, depth, timeout):
       if str(account) not in open(path + "/" + regurl + "_accounts.txt").read():
         g = open(path + "/" + regurl + "_accounts.txt", "a+")
         g.write(account + "\n")
+        g.close()
 
-    g.close()
 
   return output_dict
