@@ -28,8 +28,22 @@ def report(analysis_dict, output_file):
   
   # Populate counter vars 
   for url, stats in analysis_dict.items():
-    total_accounts += stats['Total_Accounts']
-    total_breaches += stats['Breached_Accounts']
+
+    # Get the output files again
+    regurl = re.sub(r'http[s]*\:\/*(www.)*', '', url.strip())
+    regurl = re.sub(r'\.[\w]*\/*', '', regurl)
+    breachfile = "output_files/" + regurl + "_breached.txt"
+    accountfile = "output_files/" + regurl + "_accounts.txt"
+
+    # Take totals from the size of the files, not just our dictionaries
+    with open(accountfile, "r") as c:
+      total_accounts = len(c.readlines())
+    #total_accounts += stats['Total_Accounts']
+
+    with open(breachfile, "r",) as d:
+      total_breaches += len(d.readlines())
+    #total_breaches += stats['Breached_Accounts']
+
     total_pastes += stats['Pasted_Accounts']
     total_uniques += stats['Private_Accounts']
     
