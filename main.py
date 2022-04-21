@@ -19,6 +19,10 @@ def main(argv):
     args = parser.parse_args()
 
     os.system('clear')
+    print("\n----------------------------------------------")
+    print("Hookshot Breach Comparison Tool")
+    print("v1.1 - Stable")
+    print("----------")
 
     # Run URL scraper
     account_dict = webwork.webscraper(args.URL, args.depth, args.timeout)
