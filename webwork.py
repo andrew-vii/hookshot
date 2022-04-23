@@ -237,7 +237,7 @@ def webscraper(URL, depth, timeout):
     subproc_return = re.sub('robin@digi.nin','',subproc_return)
 
     # Run regex against output, strip out only emails that match formatting
-    regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
+    regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{2,}')
     if regexp.search(subproc_return):
       output_dict[i] = regexp.findall(str(subproc_return))
 
