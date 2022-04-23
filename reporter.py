@@ -38,12 +38,10 @@ def report(analysis_dict, output_file):
     # Take totals from the size of the files, not just our dictionaries
     with open(accountfile, "r") as c:
       total_accounts += len(c.readlines())
-      c.lose()
     #total_accounts += stats['Total_Accounts']
 
     with open(breachfile, "r",) as d:
       total_breaches += len(d.readlines())
-      d.close()
     #total_breaches += stats['Breached_Accounts']
 
     total_pastes += stats['Pasted_Accounts']
@@ -72,10 +70,8 @@ def report(analysis_dict, output_file):
     # Grab the count of breaches and accounts from the output files
     with open(accountfile, "r") as e:
       url_accounts = len(e.readlines())
-      e.close()
     with open(breachfile, "r",) as f:
       url_breaches = len(f.readlines())
-      f.close()
 
     # Get our exposure rate for URL
     if ( url_breaches > 0 ) and ( url_accounts > 0 ):
