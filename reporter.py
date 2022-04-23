@@ -37,11 +37,13 @@ def report(analysis_dict, output_file):
 
     # Take totals from the size of the files, not just our dictionaries
     with open(accountfile, "r") as c:
-      total_accounts = len(c.readlines())
+      total_accounts += len(c.readlines())
+      c.lose()
     #total_accounts += stats['Total_Accounts']
 
     with open(breachfile, "r",) as d:
       total_breaches += len(d.readlines())
+      d.close()
     #total_breaches += stats['Breached_Accounts']
 
     total_pastes += stats['Pasted_Accounts']
@@ -60,24 +62,45 @@ def report(analysis_dict, output_file):
   for url, stats in analysis_dict.items():
     report_out += "\n------------------"
     report_out += "\nURL: " + url
-    
+
+    # Get the output files again
+    regurl = re.sub(r'http[s]*\:\/*(www.)*', '', url.strip())
+    regurl = re.sub(r'\.[\w]*\/*', '', regurl)
+    breachfile = "output_files/" + regurl + "_breached.txt"
+    accountfile = "output_files/" + regurl + "_accounts.txt"
+
+    # Grab the count of breaches and accounts from the output files
+    with open(accountfile, "r") as e:
+      url_accounts = len(e.readlines())
+      e.close()
+    with open(breachfile, "r",) as f:
+      url_breaches = len(f.readlines())
+      f.close()
+
     # Get our exposure rate for URL
-    if ( stats['Breached_Accounts'] + stats['Pasted_Accounts'] > 0 ) and stats['Total_Accounts'] > 0:
-      exposure = str(round(100 * float(stats['Breached_Accounts'] + stats['Pasted_Accounts']) / float(stats['Total_Accounts']),1))
+    if ( url_breaches > 0 ) and ( url_accounts > 0 ):
+      exposure = str(round(100 * float(url_breaches) / float(url_accounts),1))
+
+    #if ( stats['Breached_Accounts'] + stats['Pasted_Accounts'] > 0 ) and stats['Total_Accounts'] > 0:
+      #exposure = str(round(100 * float(stats['Breached_Accounts'] + stats['Pasted_Accounts']) / float(stats['Total_Accounts']),1))
 
       report_out += "\nExposure Rate: " + exposure + "%"
-      report_out += "\nAccounts: " + str(stats['Total_Accounts'])
-      report_out += "\nBreached Accounts: " + str(stats['Breached_Accounts'])
+      report_out += "\nAccounts: " + str(url_accounts)
+      #report_out += "\nAccounts: " + str(stats['Total_Accounts'])
+      report_out += "\nBreached Accounts: " + str(url_breaches)
+      #report_out += "\nBreached Accounts: " + str(stats['Breached_Accounts'])
       report_out += "\nPasted Accounts: " + str(stats['Pasted_Accounts'])
       report_out += "\nExposed Corporate Accounts (.org or .gop): " + str(stats['Private_Accounts'])
 
       
-    elif ( stats['Total_Accounts'] ) == 0:
+    #elif ( stats['Total_Accounts'] ) == 0:
+    elif ( url_accounts == 0):
       report_out += "\nNo Accounts Found for URL "
       
     else: 
       report_out += "\nExposure Rate: 0%"
-      report_out += "\nAccounts: " + str(stats['Total_Accounts'])
+      report_out += "\nAccounts: " + str(url_accounts)
+      #report_out += "\nAccounts: " + str(stats['Total_Accounts'])
     
     # Print end of section 
     report_out += "\n------------------\n"
