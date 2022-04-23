@@ -211,7 +211,7 @@ def hibp_checker(keyfile, account_dict):
         # Else, the account is new and has not been previously checked for a breach, send it
         else:
           # Double-check on email formatting
-          regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{3}')
+          regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{2,}')
 
           if regexp.search(str(account)):
             match_account = regexp.search(str(account)).group(0)
