@@ -21,7 +21,7 @@ def main(argv):
     os.system('clear')
     print("\n----------------------------------------------")
     print("Hookshot Breach Comparison Tool")
-    print("v1.1 - Stable")
+    print("v1.2 - Stable")
     print("----------")
 
     # Run URL scraper
