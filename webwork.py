@@ -228,6 +228,3 @@ proc_return = re.sub('robin@digi.nin', '', subproc_return)
                     g.write(account + "\n")
 
     return output_dict
-```
-
-This version includes detailed docstrings and improved error handling. Next, please provide the contents of `main.py`.
