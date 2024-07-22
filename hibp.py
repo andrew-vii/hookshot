@@ -5,249 +5,223 @@ import requests
 import time
 import re
 
-
-# Open HIBP API Key file and read in API Key value 
 def get_api_key(api_file):
-  g = open(api_file,"r")
-  api_key = g.readline().strip()
+    """
+    Read the API key from the provided file.
 
-  #try:
-    #g = open(api_file,"r")
-    #api_key = g.readline().strip()
-  
-  #except IOError:
-    #print("Error opening HIBP API Key File")
-    #exit()
-  
-  return api_key
+    Args:
+    api_file (str): The path to the file containing the API key.
 
-# Deprecated now that webscraper outputs an account dict
-def get_accounts():
-  account_dict = {}
-  
-  if os.path.isdir("account_files"):
-    filenames = os.listdir("account_files")
-  else:
-    print("Error getting account files -- is there an account_files directory?")
-    filenames = 0
-    exit()
-  
-  for i in filenames:
-    accounts = []
-
+    Returns:
+    str: The API key.
+    """
     try:
-      h = open("account_files/" + i, "r")
-
+        with open(api_file, "r") as g:
+            api_key = g.readline().strip()
     except IOError:
-      print("Error opening Accounts File")
-      exit()
+        print("Error opening HIBP API Key File")
+        exit()
+    return api_key
 
+def get_accounts():
+    """
+    Deprecated function to get accounts from account files.
+    
+    Returns:
+    dict: A dictionary with filenames as keys and account lists as values.
+    """
+    account_dict = {}
+    
+    if os.path.isdir("account_files"):
+        filenames = os.listdir("account_files")
     else:
-      print("Unknown Error")
-      exit()
+        print("Error getting account files -- is there an account_files directory?")
+        exit()
+    
+    for filename in filenames:
+        accounts = []
+        try:
+            with open("account_files/" + filename, "r") as h:
+                accounts = [line.strip() for line in h]
+        except IOError:
+            print("Error opening Accounts File")
+            exit()
 
-    for line in h:
-      accounts.append(line.strip())
-  
-    # Update master dict with list of accounts for URL
-    account_dict[i] = accounts
-  
-  return account_dict
-
+        account_dict[filename] = accounts
+    
+    return account_dict
 
 def submit_account_breaches(account, api_key_file):
+    """
+    Submit a request to HIBP API to check for account breaches.
 
-  # Display-friendly account
-  display_account = ("".join((account[:2], re.sub(r'[^@]',r'*', account[1:(account.find('@'))])))) + account[(account.find('@')):]
+    Args:
+    account (str): The email account to check.
+    api_key_file (str): The path to the API key file.
 
-  # Set up payload with our HIBP API key and distinctive UAS
-  req_headers = {'hibp-api-key': get_api_key(api_key_file),
-             'user-agent': 'Hookshot'
-            }
+    Returns:
+    Response: The response from the HIBP API.
+    """
+    display_account = ("".join((account[:2], re.sub(r'[^@]', r'*', account[1:(account.find('@'))])))) + account[(account.find('@')):]
+    req_headers = {'hibp-api-key': get_api_key(api_key_file), 'user-agent': 'Hookshot'}
+    breach_url = 'https://haveibeenpwned.com/api/v3/breachedaccount/' + account
 
-  # Set URL for account breaches
-  breach_url = 'https://haveibeenpwned.com/api/v3/breachedaccount/' + account
+    print("Submitting breach request for account: " + display_account)
+    breaches_response = requests.get(breach_url, headers=req_headers)
+    
+    return breaches_response 
 
-  # Submit our GET request
-  print("Submitting breach request for account: " + display_account)
-  breaches_response = requests.get(breach_url, headers=req_headers)
-  
-  return breaches_response 
- 
-  
 def submit_account_pastes(account, api_key_file):
+    """
+    Submit a request to HIBP API to check for account pastes.
 
-  # Display-friendly account name
-  display_account = ("".join((account[:2], re.sub(r'[^@]',r'*', account[1:(account.find('@'))])))) + account[(account.find('@')):]
+    Args:
+    account (str): The email account to check.
+    api_key_file (str): The path to the API key file.
 
-  # Set up payload with our HIBP API key and distinctive UAS
-  req_headers = {'hibp-api-key': get_api_key(api_key_file),
-             'user-agent': 'Hookshot'
-            }
-  
-  # Set URL for account pastes
-  paste_url = 'https://haveibeenpwned.com/api/v3/pasteaccount/' + account
-  
-  # Submit our GET request
-  print("Submitting paste request for account: " + display_account)
-  pastes_response = requests.get(paste_url, headers=req_headers)
-  
-  return pastes_response
+    Returns:
+    Response: The response from the HIBP API.
+    """
+    display_account = ("".join((account[:2], re.sub(r'[^@]', r'*', account[1:(account.find('@'))])))) + account[(account.find('@')):]
+    req_headers = {'hibp-api-key': get_api_key(api_key_file), 'user-agent': 'Hookshot'}
+    paste_url = 'https://haveibeenpwned.com/api/v3/pasteaccount/' + account
 
+    print("Submitting paste request for account: " + display_account)
+    pastes_response = requests.get(paste_url, headers=req_headers)
+    
+    return pastes_response
 
 def check_account_breaches(breach_response, account):
-  
-  r = breach_response
+    """
+    Check and parse the breach response for a given account.
 
-  display_account = ("".join((account[:2], re.sub(r'[^@]',r'*', account[1:(account.find('@'))])))) + account[(account.find('@')):]
+    Args:
+    breach_response (Response): The response from the HIBP API for breaches.
+    account (str): The email account checked.
 
-  breach_info = {
-    'num_breaches': 0,
-    'breaches': []
-  }
-  
-  # Checking for breaches 
-  if r.status_code == 404:
-    print("%s not found in a breach." %display_account)
+    Returns:
+    dict: Information about breaches.
+    """
+    r = breach_response
+    display_account = ("".join((account[:2], re.sub(r'[^@]', r'*', account[1:(account.find('@'))])))) + account[(account.find('@')):]
+
+    breach_info = {
+        'num_breaches': 0,
+        'breaches': []
+    }
     
-  elif r.status_code == 200:
-    data = r.json()
-    print('-------:New Breach Found for: %s' %display_account)
-    num_breaches = len(data)
-    breach_info['num_breaches'] = num_breaches
+    if r.status_code == 404:
+        print("%s not found in a breach." % display_account)
+    elif r.status_code == 200:
+        data = r.json()
+        print('-------:New Breach Found for: %s' % display_account)
+        breach_info['num_breaches'] = len(data)
+        breach_info['breaches'] = data
+    else:
+        data = r.json()
+        print('Error: <%s> %s' % (str(r.status_code), data['message']))
+        exit()
 
-  else:
-    data = r.json()
-    print('Error: <%s>  %s'%(str(r.status_code),data['message']))
-    exit()
-
-  return breach_info
-
+    return breach_info
 
 def check_account_pastes(paste_response, account):
-  
-  r = paste_response
+    """
+    Check and parse the paste response for a given account.
 
-  display_account = ("".join((account[:2], re.sub(r'[^@]',r'*', account[1:(account.find('@'))])))) + account[(account.find('@')):]
-  
-  paste_info = {
-    'num_pastes': 0,
-    'pastes': []
-  }
-  
-  # Checking for pastes 
-  if r.status_code == 404:
-    print("%s not found in a paste." %display_account)
+    Args:
+    paste_response (Response): The response from the HIBP API for pastes.
+    account (str): The email account checked.
+
+    Returns:
+    dict: Information about pastes.
+    """
+    r = paste_response
+    display_account = ("".join((account[:2], re.sub(r'[^@]', r'*', account[1:(account.find('@'))])))) + account[(account.find('@')):]
+
+    paste_info = {
+        'num_pastes': 0,
+        'pastes': []
+    }
     
-  elif r.status_code == 200:
-    data = r.json()
-    print('-------:New Paste Found for: %s' %display_account)
-    num_pastes = len(data)
-    paste_info['num_pastes'] = num_pastes
+    if r.status_code == 404:
+        print("%s not found in a paste." % display_account)
+    elif r.status_code == 200:
+        data = r.json()
+        print('-------:New Paste Found for: %s' % display_account)
+        paste_info['num_pastes'] = len(data)
+        paste_info['pastes'] = data
+    else:
+        data = r.json()
+        print('Error: <%s> %s' % (str(r.status_code), data['message']))
+        exit()
 
-  else:
-    data = r.json()
-    print('Error: <%s>  %s'%(str(r.status_code),data['message']))
-    exit()
-
-  return paste_info
-
+    return paste_info
 
 def hibp_checker(keyfile, account_dict):
+    """
+    Check accounts for breaches and pastes using the HIBP API.
 
-  # Create nested dictionary and blank list
-  output_dict = {}
-  blank_urls = []
-  
-  # Get accounts - not needed after adding the nested dict output to the webscraper
-  #account_dict = get_accounts()
+    Args:
+    keyfile (str): The path to the API key file.
+    account_dict (dict): A dictionary with URLs as keys and account lists as values.
 
-  # Set up filepath
-  path = 'output_files/'
+    Returns:
+    tuple: A dictionary with account information and a list of URLs with no accounts.
+    """
+    output_dict = {}
+    blank_urls = []
 
-  # Submit each account for pastes and breaches
-  for url, accounts in account_dict.items():
+    path = 'output_files/'
 
-    # Set up logfile
-    logfile = "hibp_output.log"
-    output_file = open(logfile,"a+")
+    for url, accounts in account_dict.items():
+        logfile = "hibp_output.log"
+        with open(logfile, "a+") as output_file:
+            regurl = re.sub(r'http[s]*\:\/*(www.)*', '', url.strip())
+            regurl = re.sub(r'\.[\w]*\/*', '', regurl)
+            breachfile = "output_files/" + regurl + "_breached.txt"
+            accountfile = "output_files/" + regurl + "_accounts.txt"
+            with open(breachfile, "a+") as h:
 
-    # Set up breached accounts file for each URL
-    regurl = re.sub(r'http[s]*\:\/*(www.)*', '', url.strip())
-    regurl = re.sub(r'\.[\w]*\/*', '', regurl)
-    breachfile = "output_files/" + regurl + "_breached.txt"
-    accountfile = "output_files/" + regurl + "_accounts.txt"
-    h = open(breachfile, "a+")
+                if len(accounts) > 1:
+                    first_run = 1
+                    if os.path.getsize(breachfile) > 0:
+                        first_run = 0
 
-    # If there's output for the URL, submit and log
-    if len(accounts) > 1:
+                    for account in accounts:
+                        display_account = ("".join((account[:2], re.sub(r'[^@]', r'*', account[1:(account.find('@'))])))) + account[(account.find('@')):]
 
-      # Fix an error related to the first run for adding breaches into a blank list
-      first_run = 1
-      if (os.path.getsize(breachfile)) > 0:
-        first_run = 0
+                        if str(account) in open(breachfile).read():
+                            print("Found previous breach for " + display_account)
+                            output_dict[account] = {'URL': url.strip(), 'Breach_Count': 1, 'Paste_Count': 0}
+                        elif ((first_run == 0) and (str(account) in open(accountfile).read()) and (str(account) not in open(breachfile).read())):
+                            print("Previously checked " + display_account + " -- no breaches found.")
+                            output_dict[account] = {'URL': url.strip(), 'Breach_Count': 0, 'Paste_Count': 0}
+                        else:
+                            regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{2,}')
+                            if regexp.search(str(account)):
+                                match_account = regexp.search(str(account)).group(0)
+                                output_dict[account] = {}
 
-      # Create nested dict as key
-      for account in accounts:
+                                time.sleep(1)
+                                breach_result = submit_account_breaches(match_account, keyfile)
+                                breach_info = check_account_breaches(breach_result, match_account)
 
-        display_account = ("".join((account[:2], re.sub(r'[^@]',r'*', account[1:(account.find('@'))])))) + account[(account.find('@')):]
+                                time.sleep(2)
+                                paste_result = submit_account_pastes(match_account, keyfile)
+                                paste_info = check_account_pastes(paste_result, match_account)
+                                time.sleep(1)
 
-        # Check if we already have a breach result for this account
-        if str(account) in open(breachfile).read():
-          print("Found previous breach for " + display_account)
-          output_dict[account] = {}
-          output_dict[account]['URL'] = url.strip()
-          output_dict[account]['Breach_Count'] = 1
-          output_dict[account]['Paste_Count'] = 0
+                                output_dict[account] = {
+                                    'URL': url.strip(),
+                                    'Breach_Count': breach_info['num_breaches'],
+                                    'Breach_Detail': breach_info['breaches'],
+                                    'Paste_Count': paste_info['num_pastes'],
+                                    'Paste_Info': paste_info['pastes']
+                                }
 
-        # Future work area - check if we've already checked for a breach on this account
-        elif ((first_run == 0) and (str(account) in open(accountfile).read()) and (str(account) not in open(breachfile).read())):
-          print("Previously checked " + display_account + " -- no breaches found.")
-          output_dict[account] = {}
-          output_dict[account]['URL'] = url.strip()
-          output_dict[account]['Breach_Count'] = 0
-          output_dict[account]['Paste_Count'] = 0
+                                if breach_info['num_breaches'] >= 1:
+                                    h.write(account + "\n")
+                else:
+                    blank_urls.append(url)
 
-        # Else, the account is new and has not been previously checked for a breach, send it
-        else:
-          # Double-check on email formatting
-          regexp = re.compile(r'[a-zA-Z]+[\w.]*@[\w]*.[a-zA-Z]{2,}')
-
-          if regexp.search(str(account)):
-            match_account = regexp.search(str(account)).group(0)
-
-            # Add to nested dict
-            output_dict[account] = {}
-
-            # Submit account for breaches and check
-            time.sleep(1)
-            breach_result = submit_account_breaches(match_account, keyfile)
-            breach_info = check_account_breaches(breach_result, match_account)
-
-            # Submit account for pastes and check
-            time.sleep(2)
-            paste_result = submit_account_pastes(match_account, keyfile)
-            paste_info = check_account_pastes(paste_result, match_account)
-            time.sleep(1)
-
-            # Output breach and paste info to nested dict
-            output_dict[account]['URL'] = url.strip()
-            output_dict[account]['Breach_Count'] = breach_info['num_breaches']
-            output_dict[account]['Breach_Detail'] = breach_info['breaches']
-            output_dict[account]['Paste_Count'] = paste_info['num_pastes']
-            output_dict[account]['Paste_Info'] = paste_info['pastes']
-
-            # Output info to the breachfile for that account
-            if breach_info['num_breaches'] >= 1:
-              h.write(account + "\n")
-
-    # Else, if the url didn't have any accounts, add URL to blank list
-    else:
-      blank_urls.append(url)
-
-    # Close output file
-    output_file.close()
-
-  return output_dict,blank_urls
-
-
+    return output_dict, blank_urls
